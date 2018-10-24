@@ -9,22 +9,25 @@ import java.util.Map;
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Actor;
 import com.akkaVisualizor.akkaModel.Channel;
+import com.akkaVisualizor.akkaModel.Message;
 
 public class GlobalModel {
 	private final Context context;
-//	private final List<VisualActor> visualActorList;
+	private final Map<Actor, VisualActor> actorToVisualActor;
 	private final List<VisualChannel> channelList;
-	private final Map<VisualActor, List<VisualActor>> existingChannel;
 	private final List<VisualActor> selectedActorList;
-	
+
 	public GlobalModel(Context context) {
 		this.context = context;
-//		visualActorList = new ArrayList<VisualActor>();
+		actorToVisualActor = new HashMap<Actor, VisualActor>();
 		channelList = new ArrayList<VisualChannel>();
-		existingChannel = new HashMap<VisualActor, List<VisualActor>>();
 		selectedActorList = new ArrayList<VisualActor>();
-	
+
 	}
+
+	/* ********************************************** *
+	 * *      ACTOR SELECTION GESTION FUNCTIONS     * *
+	 * ********************************************** */
 	
 	public void selectActor(VisualActor actor) {
 		deselectAllActorUtil();
@@ -38,21 +41,68 @@ public class GlobalModel {
 			selectActorUtil(actor);
 		}
 	}
+	
+	public void simulationPaneClicked() {
+		deselectAllActorUtil();
+	}
+	
+	public void nodeDeletion() {
+		try {
+			throw new Exception("NOT YET IMPLEMENTED");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	/* ********************************* *
+	 * *      CREATION FUNCTIONS       * *
+	 * ********************************* */ 
+
+	public void createActor(String name, double x, double y) throws Exception {
+		Actor actor = context.getAkkaModel().createActor(name);
+		// if no exception thrown
+		VisualActor visualActor = new VisualActor(context, actor, name, x, y);
+		context.getApp().createActor(visualActor, name, x, y);
+	}
+
+	public void createMessageTo(VisualActor target) {
+		for(VisualActor source : selectedActorList) {
+			// add to akka model
+			Message message = context.getAkkaModel().createMessage(source.getActor(), target.getActor());
+
+			// add internally
+			VisualMessage visualMessage = new VisualMessage(message, source, target);
+
+			// add to view
+			context.getApp().createMessage(visualMessage);
+		}
+	}
+	
+	public void registerMessageCreated(Message message) {
+		// fetch source and target of message
+		VisualActor source = actorToVisualActor.get(message.getSource());
+		VisualActor target = actorToVisualActor.get(message.getTarget());
+
+		// add internally
+		VisualMessage visualMessage = new VisualMessage(message, source, target);
+
+		// add to view
+		context.getApp().createMessage(visualMessage);
+	}
 
 	public void createBidirectionalChannelTo(VisualActor target) {
 		for(VisualActor source : selectedActorList) {
 			if(!channelAlreadyExist(source, target)) {
-				System.out.println("creating channel");
-				
 				// add to akka model
 				Channel channel = context.getAkkaModel().createChannel(source.getActor(), target.getActor());
-				
+
 				// add internally
 				VisualChannel visualChannel = new VisualChannel(context, channel, source, target);
-				createBidirectionalChannel(visualChannel, source, target);
-				
+				channelList.add(visualChannel);
+
 				// add channel to view
-				context.getVisualizor().createBidirectionalChannel(visualChannel);
+				context.getApp().createBidirectionalChannel(visualChannel);
 			}
 		}
 	}
@@ -65,16 +115,21 @@ public class GlobalModel {
 		}
 	}
 
+	/* ********************************* *
+	 * *              UTILS            * *
+	 * ********************************* */ 
+
+
 	private void selectActorUtil(VisualActor actor) {
 		selectedActorList.add(actor);
 		actor.setSelected();
 	}
-	
+
 	private void deselectActorUtil(VisualActor actor) {
 		selectedActorList.remove(actor);
 		actor.setDeselected();
 	}
-	
+
 	private void deselectAllActorUtil() {
 		// using iterator to avoid concurrent modification
 		ListIterator<VisualActor> iter = selectedActorList.listIterator();
@@ -86,34 +141,21 @@ public class GlobalModel {
 	}
 
 	private boolean channelAlreadyExist(VisualActor source, VisualActor target) {
-		boolean exist = false;
-		if(existingChannel.get(source) != null) {
-			exist |= existingChannel.get(source).contains(target);
+		for(VisualChannel channel : channelList) {
+			if((channel.getSource().equals(source) && channel.getTarget().equals(target))
+					|| (channel.getTarget().equals(source) && channel.getSource().equals(target))) {
+				return true;
+			}
 		}
-		if(existingChannel.get(target) != null) {
-			exist |= existingChannel.get(target).contains(source);
-		}
-		return exist;
+		return false;
 	}
 
-	private void createBidirectionalChannel(VisualChannel channel, VisualActor source, VisualActor target) {
-		// add visualChannel to visualChannelList
-		channelList.add(channel);
-		
-		// update existingChannel variable
-		List<VisualActor> targetList = existingChannel.get(source);
-		if(targetList == null) { // handle case when no channel yet added to source
-			targetList = new ArrayList<VisualActor>();
-		}
-		targetList.add(target);
-		existingChannel.put(source, targetList);
-	}
-
-	public void createActor(String name, double x, double y) throws Exception {
-		Actor actor = context.getAkkaModel().createActor(name);
-		// if no exception thrown
-		VisualActor visualActor = new VisualActor(context, actor, name, x, y);
-		context.getVisualizor().createActor(visualActor, name, x, y);
-	}
 	
+
+	
+
+	
+
+	
+
 }

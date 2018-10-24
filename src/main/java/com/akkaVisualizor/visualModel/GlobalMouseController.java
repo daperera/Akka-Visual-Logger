@@ -2,8 +2,11 @@ package com.akkaVisualizor.visualModel;
 
 
 import com.akkaVisualizor.Context;
-import com.akkaVisualizor.javaFX.ActorView;
+import com.akkaVisualizor.javaFX.pane.SimulatorPane;
+import com.akkaVisualizor.javaFX.view.ActorView;
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class GlobalMouseController {
@@ -22,18 +25,39 @@ public class GlobalMouseController {
 		} else if(e.isControlDown()) {
 			context.getModel().createBidirectionalChannelTo(actor);
 		} else if(e.isAltDown()) {
-			context.getModel().createUnidirectionalChannelTo(actor);
+			context.getModel().createMessageTo(actor);;
 		} else {
 			context.getModel().selectActor(actor);
 		}
-
+		
+		// handle drag and move
+//		actor.setDragDelta(e.getSceneX(), e.getSceneY());
+		actor.setDragDelta(e.getSceneX(), e.getSceneY());
+		
+		
+		e.consume();
 	}
 
 	public void onMouseDragged(ActorView actorView, MouseEvent e) {
-		VisualActor target = actorView.getModel();
+		VisualActor actor = actorView.getModel();
 		
 		// handle drag and move
-		target.drag(e.getSceneX(), e.getSceneY());
+		double x = actor.getXProperty().get(), y= actor.getYProperty().get();
+		actor.drag(x+e.getSceneX()-actor.getDragDeltaX(), y+e.getSceneY()-actor.getDragDeltaY());
+		actor.setDragDelta(e.getSceneX(), e.getSceneY());
+		e.consume();
+	}
+
+	public void onMousePressed(SimulatorPane simulatorPane, MouseEvent e) {
+		context.getModel().simulationPaneClicked();
+		e.consume();
+	}
+
+	public void onKeyPressed(SimulatorPane simulatorPane, KeyEvent e) {
+		if(e.getCode().equals(KeyCode.DELETE)) {
+			context.getModel().nodeDeletion();
+		}
+		e.consume();
 	}
 
 }

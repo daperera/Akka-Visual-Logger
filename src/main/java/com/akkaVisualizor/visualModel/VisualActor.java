@@ -13,7 +13,7 @@ public class VisualActor {
 	private BooleanProperty selected;
 //	private String name;
 //	private final Delta dragDelta = new Delta();
-//	private double deltaX, deltaY;
+	private double dragDeltaX, dragDeltaY;
 	private DoubleProperty x, y;
 	private Actor actor;
 //	private Context context;
@@ -23,6 +23,7 @@ public class VisualActor {
 		this.actor = actor;
 		this.x = new SimpleDoubleProperty(x);
 		this.y = new SimpleDoubleProperty(y);
+		
 		
 //		this.name = name;
 		
@@ -58,5 +59,18 @@ public class VisualActor {
 		return selected;
 	}
 	
+	public void setDragDelta(double dragDeltaX, double dragDeltaY) {
+		this.dragDeltaX = dragDeltaX;
+		this.dragDeltaY = dragDeltaY;
+	}
+
+	public double getDragDeltaX() {
+		return dragDeltaX;
+	}
+	
+	public double getDragDeltaY() {
+		return dragDeltaY;
+	}
+
 //	private class Delta { double x, y; }
 }

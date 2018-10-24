@@ -11,7 +11,7 @@ public class Context {
 	private AkkaModel akkaModel;
 	private GlobalMouseController globalMouseController; 
 	private GlobalModel globalModel;
-	private App visualizor;
+	private App app;
 	
 	public void set(Configuration configuration, AkkaModel akkaModel, GlobalMouseController globalMouseController,
 			GlobalModel model, App visualizor) {
@@ -19,7 +19,7 @@ public class Context {
 		this.akkaModel = akkaModel;
 		this.globalMouseController = globalMouseController;
 		this.globalModel = model;
-		this.visualizor = visualizor;
+		this.app = visualizor;
 	}
 	public GlobalModel getModel() {
 		return globalModel;
@@ -30,8 +30,8 @@ public class Context {
 	public AkkaModel getAkkaModel() {
 		return akkaModel;
 	}
-	public App getVisualizor() {
-		return visualizor;
+	public App getApp() {
+		return app;
 	}
 	public GlobalMouseController getGlobalMouseController() {
 		return globalMouseController;

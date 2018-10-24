@@ -12,7 +12,11 @@ public class AkkaModel {
 		return new Actor();
 	}
 
-	public Channel createChannel(Object actor, Object actor2) {
+	public Channel createChannel(Object source, Object target) {
 		return null;
+	}
+
+	public Message createMessage(Actor source, Actor target) {
+		return new Message(source, target, null);
 	}
 }

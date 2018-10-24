@@ -2,6 +2,7 @@ package com.akkaVisualizor.javaFX;
 
 import java.io.IOException;
 
+import com.akkaVisualizor.AkkaVisualDebugger;
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.AkkaModel;
 import com.akkaVisualizor.akkaModel.Configuration;
@@ -9,8 +10,6 @@ import com.akkaVisualizor.javaFX.pane.MainPane;
 import com.akkaVisualizor.javaFX.view.ActorView;
 import com.akkaVisualizor.javaFX.view.ChannelView;
 import com.akkaVisualizor.javaFX.view.MessageView;
-import com.akkaVisualizor.visualModel.GlobalModel;
-import com.akkaVisualizor.visualModel.GlobalMouseController;
 import com.akkaVisualizor.visualModel.VisualActor;
 import com.akkaVisualizor.visualModel.VisualChannel;
 import com.akkaVisualizor.visualModel.VisualMessage;
@@ -21,41 +20,27 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-	private Configuration conf;
-	private AkkaModel akkaModel;
 	private MainPane root;
-	private Context context;
 	
-	public static void launch()
-	{
+	private static AkkaVisualDebugger appEntryPoint;
+	private static Context context;
+	
+	public static void launch(AkkaVisualDebugger appEntryPoint, Context context) {
+		App.appEntryPoint = appEntryPoint;
+		App.context = context;
 		Application.launch();
 	}
 
 	@Override
-	public void start(Stage stage) throws IOException
-	{
-		//
-		context = new Context();
+	public void start(Stage stage) throws IOException {
 		
-		// load config
-		conf = Configuration.load();
-
-		// load Akka simulator 
-		akkaModel = new AkkaModel(context);
-		
-		// load mouse controller
-		GlobalMouseController mouseController = new GlobalMouseController(context);
-		
-		// load global model
-		GlobalModel model = new GlobalModel(context);
-		
-		// actualize context
-		context.set(conf, akkaModel, mouseController, model, this);
+		// register itself to the app entryPoint
+		appEntryPoint.registerJavaFXApplication(this);
 		
 		// javafx init
 		root = new MainPane(context);
 		Scene scene = new Scene(root);
-		stage.setTitle(conf.getTitle());
+		stage.setTitle(context.getConfiguration().getTitle());
 		stage.setScene(scene);
 		stage.show();
 		

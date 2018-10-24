@@ -1,0 +1,8 @@
+TODO List
+- drag&drop ActorType to simulatorPane : create a new node of corresponding type
+- drag&drop Message to Node : append Message to authorizedMessage list ?
+- drag&drop NodeItem to simulatorPane : update location of NodeView
+--> VisualNode is model for NodeItem abd NodeView (share selection)
+
+- createActor() accept Akka Parent as a parameter (ajust location of created actor)
+- unify selectedActorList and SelectedChannelList in a single selectedItemList, and simplify processing

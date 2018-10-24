@@ -33,9 +33,9 @@ public class SimulatorPane extends AnchorPane {
 			newActorY=e.getY(); // at the correct place
 		});
 		
-		// create mouse and keyBoardListener
+		// create mouse listener
 		setOnMousePressed(e -> context.getGlobalMouseController().onMousePressed(this, e));
-		setOnKeyPressed(e -> context.getGlobalMouseController().onKeyPressed(this, e));
+		
 	}
 
 	private void createActor(ActionEvent e) {

@@ -4,8 +4,10 @@ import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Configuration;
 import com.akkaVisualizor.visualModel.VisualActor;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -15,7 +17,6 @@ import javafx.scene.text.TextBoundsType;
 public class ActorView extends StackPane {
 
 	private final VisualActor actor;
-	private final DropShadow borderGlow;
 	private final Circle circle;
 
 	public ActorView(Context context, VisualActor actor, String name, double x, double y) {
@@ -43,7 +44,7 @@ public class ActorView extends StackPane {
 		circle.setStroke(conf.getActorStroke());
 		circle.setStrokeType(conf.getActorStrokeType());
 		circle.setStrokeWidth(conf.getStrokeWidth());
-		borderGlow = new DropShadow();
+		DropShadow borderGlow = new DropShadow();
 		borderGlow.setColor(Color.BLUE);
 		borderGlow.setOffsetX(0f);
 		borderGlow.setOffsetY(0f);
@@ -51,7 +52,8 @@ public class ActorView extends StackPane {
 		// init controller
 		setOnMousePressed(e -> context.getGlobalMouseController().onMousePressed(this, e));
 		setOnMouseDragged(e -> context.getGlobalMouseController().onMouseDragged(this, e));
-		//circle.setOnContextMenuRequested(e -> contextMenu.show(getParent(), e.getScreenX(), e.getScreenY()));
+		
+		// add border glow effect when selected
 		actor.getSelectedProperty().addListener((ChangeListener<Boolean>) (o, oldVal,  newVal) -> { 
 			if(newVal) 
 				circle.setEffect(borderGlow); 
@@ -59,11 +61,17 @@ public class ActorView extends StackPane {
 				circle.setEffect(null);
 		});
 
-
+		// delete itself when the actor is set deleted
+		actor.getDeletedProperty().addListener((ChangeListener<Boolean>) (o, oldVal,  newVal) -> { 
+			if(newVal) {
+				// use Platform  in order to avoid throwing IllegalStateException by running from a non-JavaFX thread
+				Platform.runLater(() -> ((Pane) ActorView.this.getParent()).getChildren().remove(ActorView.this));
+			}
+		});
 	}
-	
+
 	public VisualActor getModel() {
 		return actor;
 	}
-	
+
 }

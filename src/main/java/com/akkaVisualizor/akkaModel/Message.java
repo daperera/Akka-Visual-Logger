@@ -7,7 +7,7 @@ public class Message {
 	private final Object message;
 	
 	public Message(Actor source, Actor target, Object message) {
-		delivered = true;
+		delivered = false;
 		this.source = source;
 		this.target = target;
 		this.message = message;

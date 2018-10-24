@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import com.akkaVisualizor.AkkaVisualDebugger;
 import com.akkaVisualizor.Context;
-import com.akkaVisualizor.akkaModel.AkkaModel;
-import com.akkaVisualizor.akkaModel.Configuration;
 import com.akkaVisualizor.javaFX.pane.MainPane;
 import com.akkaVisualizor.javaFX.view.ActorView;
 import com.akkaVisualizor.javaFX.view.ChannelView;
@@ -21,6 +19,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
 	private MainPane root;
+	private Scene scene;
 	
 	private static AkkaVisualDebugger appEntryPoint;
 	private static Context context;
@@ -39,10 +38,14 @@ public class App extends Application {
 		
 		// javafx init
 		root = new MainPane(context);
-		Scene scene = new Scene(root);
+		scene = new Scene(root);
 		stage.setTitle(context.getConfiguration().getTitle());
 		stage.setScene(scene);
 		stage.show();
+		
+		// set keyboard listener
+		scene.setOnKeyPressed(e -> context.getGlobalMouseController().onKeyPressed(e));
+		scene.setOnKeyReleased(e -> context.getGlobalMouseController().onKeyReleased(e));
 		
 	}
 
@@ -63,5 +66,9 @@ public class App extends Application {
 	public void createMessage(VisualMessage visualMessage) {
 		MessageView messageView = new MessageView(context, visualMessage);
 		root.getSimulationPane().getChildren().add(messageView);
+	}
+	
+	public Scene getScene() {
+		return scene;
 	}
 }

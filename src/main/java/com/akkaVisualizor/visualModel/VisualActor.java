@@ -10,32 +10,27 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class VisualActor {
 	
-	private BooleanProperty selected;
-//	private String name;
-//	private final Delta dragDelta = new Delta();
+	private BooleanProperty selectedProperty;
 	private double dragDeltaX, dragDeltaY;
 	private DoubleProperty x, y;
 	private Actor actor;
-//	private Context context;
+	private BooleanProperty deletedProperty;
 	
 	public VisualActor(Context context, Actor actor, String name, double x, double y) {
-//		this.context = context;
 		this.actor = actor;
 		this.x = new SimpleDoubleProperty(x);
 		this.y = new SimpleDoubleProperty(y);
 		
-		
-//		this.name = name;
-		
-		selected = new SimpleBooleanProperty(false);
+		selectedProperty = new SimpleBooleanProperty(false);
+		deletedProperty = new SimpleBooleanProperty(false);
 	}
 
 	public void setSelected() {
-		selected.set(true);
+		selectedProperty.set(true);
 	}
 
 	public void setDeselected() {
-		selected.set(false);
+		selectedProperty.set(false);
 	}
 
 	public Actor getActor() {
@@ -56,7 +51,7 @@ public class VisualActor {
 	}
 	
 	public BooleanProperty getSelectedProperty() {
-		return selected;
+		return selectedProperty;
 	}
 	
 	public void setDragDelta(double dragDeltaX, double dragDeltaY) {
@@ -70,6 +65,14 @@ public class VisualActor {
 	
 	public double getDragDeltaY() {
 		return dragDeltaY;
+	}
+
+	public BooleanProperty getDeletedProperty() {
+		return deletedProperty;
+	}
+	
+	public void delete() {
+		deletedProperty.set(true);
 	}
 
 //	private class Delta { double x, y; }

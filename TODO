@@ -3,6 +3,13 @@ TODO List
 - drag&drop Message to Node : append Message to authorizedMessage list ?
 - drag&drop NodeItem to simulatorPane : update location of NodeView
 --> VisualNode is model for NodeItem abd NodeView (share selection)
+- each actor have "state" variable that stores the value of all its variables at snapshot time
+- auto save actor state at each event logged
+- ordered list of all recorded event
+- switch between record mode and idle mode
+- replay mode allowed
+- add asyncrhonizer module that allow async use of the logger from akka user
+
 
 - createActor() accept Akka Parent as a parameter (ajust location of created actor)
 - unify selectedActorList and SelectedChannelList in a single selectedItemList, and simplify processing

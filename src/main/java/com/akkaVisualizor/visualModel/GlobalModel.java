@@ -9,8 +9,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Actor;
+import com.akkaVisualizor.akkaModel.ActorType;
 import com.akkaVisualizor.akkaModel.Channel;
 import com.akkaVisualizor.akkaModel.Message;
+import com.akkaVisualizor.akkaModel.MessageType;
 
 public class GlobalModel {
 	private final Context context;
@@ -268,5 +270,13 @@ public class GlobalModel {
 		channel.delete();
 		channelList.remove(channel);
 		it.remove();
+	}
+
+	public void notifyActorTypeCreated(ActorType type) {
+		
+	}
+
+	public void notifyMessageTypeCreated(MessageType type) {
+		
 	}
 }

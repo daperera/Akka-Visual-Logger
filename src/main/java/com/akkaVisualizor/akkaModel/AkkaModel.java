@@ -114,10 +114,20 @@ public class AkkaModel {
 	}
 
 	public void logActorType(Class<? extends ActorRef> typeClass, Supplier<Props> typeConstructor) {
-		actorTypeList.add(new ActorType(typeClass, typeConstructor, system));
+		// add actoryp internally
+		ActorType type = new ActorType(typeClass, typeConstructor, system);
+		actorTypeList.add(type);
+		
+		// notify model ?
+		context.getModel().notifyActorTypeCreated(type);		
 	}
 
 	public void logMessageType(String name, Supplier<Object> messageConstructor) {
-		messageTypeList.add(new MessageType(name, messageConstructor));
+		// add actoryp internally
+		MessageType type = new MessageType(name, messageConstructor); 
+		messageTypeList.add(type);
+		
+		// notify model ?
+		context.getModel().notifyMessageTypeCreated(type);
 	}
 }

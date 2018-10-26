@@ -33,19 +33,13 @@ public class AkkaModel {
 		messageTypeList = new ArrayList<MessageType>();
 	}
 
-	public Actor createActor(String name) throws Exception {
-		if(name.equals(""))
-			throw new RuntimeException("InvalidName");
-
-		return null;
-	}
-
 	public Actor createActor(ActorType actorType, String name) throws Exception {
-		// create actor internally
+		// create actor in akka
 		ActorRef actorRef = getInstance(actorType, name);
-		Actor actor = new Actor(actorRef, name, actorType);
-		actorRefToActor.put(actorRef, actor);
 
+		// remak : use akka decided name, and not name used when invoking this function (in case they are different)
+		Actor actor = new Actor(actorRef, getName(actorRef), actorType);
+		actorRefToActor.put(actorRef, actor);
 		return actor;
 	}
 
@@ -94,32 +88,41 @@ public class AkkaModel {
 
 	public Message sendMessage(MessageType messageType, Actor source, Actor target) {
 		// construct message internally
-		Message message = new Message(source, target, messageType.getInstance()); // construct message
-		// end message in akka
-		target.getActorRef().tell(message, source.getActorRef());
+		Message message = internalMessageCreation(messageType.getInstance(), source, target);
+		
+		// send message in akka
+		target.getActorRef().tell(message.getMessage(), source.getActorRef());
 		return message;
 	}
 
 	public void logMessageSent(Object m, ActorRef source, ActorRef target) {
 		// construct message internally
-		Message message = new Message(actorRefToActor.get(source), actorRefToActor.get(target), m); // construct message
-
+		Message message = internalMessageCreation(m, actorRefToActor.get(source), actorRefToActor.get(target));
+		
 		// notify model
 		context.getModel().notifyMessageCreated(message);
 	}
 
 	public void logMessageReceived(Object m, ActorRef source, ActorRef target) {
-		// get corresponding message
-		Message message = messageToMessage.get(m);
-
-		message.setDelivered();
+		try {
+			// get corresponding message
+			Message message = messageToMessage.get(m);
+			
+			if(message==null) {
+				throw new Exception("Error : an orphan message has been received");
+			}
+			
+			message.setDelivered();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void logActorType(String typeClass, SerializableSupplier<Props> typeConstructor) {
 		// add actor internally
 		ActorType type = new ActorType(typeClass, typeConstructor, system);
 		actorTypeList.add(type);
-		
+
 		// notify model ?
 		context.getModel().notifyActorTypeCreated(type);		
 	}
@@ -128,19 +131,32 @@ public class AkkaModel {
 		// add actoryp internally
 		MessageType type = new MessageType(name, messageConstructor); 
 		messageTypeList.add(type);
-		
+
 		// notify model ?
 		context.getModel().notifyMessageTypeCreated(type);
 	}
-	
-	public ActorRef getInstance(ActorType type, String name) throws Exception {
-		try {
-			return system.actorOf(type.getTypeConstructor().get(), name);
-		} catch(InvalidActorNameException e) {
-			throw new InvalidActorNameException("name already used ["+ name + "]");
-		} catch(Exception e) {
-			throw e;
-		}
+
+	private Message internalMessageCreation(Object m, Actor source, Actor target) {
+		Message message = new Message(source, target, m); // construct message
+		messageToMessage.put(m, message);
+		return message;
 	}
 	
+	private ActorRef getInstance(ActorType type, String name) throws Exception {
+		if(name == null) { // if name is null use default akka name
+			return system.actorOf(type.getTypeConstructor().get());
+		}
+		else { // else try to use name defined by user
+			try {
+				return system.actorOf(type.getTypeConstructor().get(), name);
+			} catch(InvalidActorNameException e) {
+				throw new InvalidActorNameException("name already used ["+ name + "]");
+			}
+		}
+	}
+
+	private String getName(ActorRef actor) {
+		return actor.path().name();
+	}
+
 }

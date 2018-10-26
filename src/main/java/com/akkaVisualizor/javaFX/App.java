@@ -81,7 +81,6 @@ public class App extends Application {
 		// create dialog
 		TextInputDialog dialog = new TextInputDialog();
 		if(restarted) {
-			dialog.setHeaderText("Invalid name. Please enter a different name");
 		} else {
 			dialog.setHeaderText("Please enter the name of the new Actor");
 		}
@@ -90,8 +89,10 @@ public class App extends Application {
 
 		// get response value
 		Optional<String> result = dialog.showAndWait();
-		if(result.isPresent()) {
+		if(result.isPresent()) { // user entered result
 			name = result.get();
+		} else { // user pressed cancel or closed the window
+			name = null;
 		}
 		
 		return name;

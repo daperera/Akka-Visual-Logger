@@ -17,25 +17,45 @@ public class AkkaVisualDebugger {
 
 	private AkkaModel akkaModel;
 	private Context	context;
-	
+
 	private boolean start;
 
-	public static AkkaVisualDebugger create(ActorSystem system) {
-		return new AkkaVisualDebugger(system);
+	private static AkkaVisualDebugger instance;
+
+	public static AkkaVisualDebugger getInstance() {
+		AkkaVisualDebugger res = null;
+		try {
+			if(instance !=null) {
+				res = instance;
+			} else {
+				throw new Exception("AkkaVisualDebugger not yet started");
+			}
+		} catch( Exception e) {
+			e.printStackTrace();
+		}
+		return res;
 	}
+
+	public static synchronized AkkaVisualDebugger create(ActorSystem system) {
+		if(instance ==null) {
+			instance = new AkkaVisualDebugger(system);
+		}
+		return instance;
+	}
+
 
 	private AkkaVisualDebugger(ActorSystem system) {
 		// set still starting
 		start = false;
-		
+
 		// load context
 		context = new Context();
-				
+
 		// load Akka simulator
 		akkaModel = new AkkaModel(context, system);
-		
+
 		// load javaFX
-		
+
 		new Thread(() -> App.launch(AkkaVisualDebugger.this, context)).start(); // launch asynchronously
 		waitStart(); // give time to App to properly launch
 	}
@@ -52,7 +72,7 @@ public class AkkaVisualDebugger {
 
 		// actualize context
 		context.set(conf, akkaModel, mouseController, globalModel, app);
-		
+
 		// consider app done starting
 		start = true;
 	}
@@ -80,7 +100,7 @@ public class AkkaVisualDebugger {
 	public void logMessageType(String name, Supplier<Object> messageConstructor) {
 		akkaModel.logMessageType(name, messageConstructor);
 	}
-	
+
 	private void waitStart() {
 		while(!start) {
 			try {
@@ -90,5 +110,5 @@ public class AkkaVisualDebugger {
 			}
 		}
 	}
-	
+
 }

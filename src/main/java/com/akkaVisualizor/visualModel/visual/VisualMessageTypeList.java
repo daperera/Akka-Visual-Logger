@@ -1,32 +1,20 @@
 package com.akkaVisualizor.visualModel.visual;
 
 import java.util.Iterator;
-import java.util.List;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class VisualMessageTypeList implements Iterable<VisualMessageType> {
 	private final ObservableList<VisualMessageType> list;
-	private final BooleanProperty changeProperty;
 	
 	public VisualMessageTypeList() {
 		list = FXCollections.observableArrayList();
-		changeProperty = new SimpleBooleanProperty(false);
 	}
 	
 	public void add(VisualMessageType visualMessageType) {
-		list.add(visualMessageType);
-	}
-
-	public BooleanProperty getChangeProperty() {
-		return changeProperty;
-	}
-	
-	public void notifyChange() {
-		changeProperty.set(!changeProperty.get());
+		Platform.runLater(() -> list.add(visualMessageType));
 	}
 
 	@Override
@@ -38,7 +26,7 @@ public class VisualMessageTypeList implements Iterable<VisualMessageType> {
 		return list.contains(t);
 	}
 	
-	public List<VisualMessageType> get() {
+	public ObservableList<VisualMessageType> get() {
 		return list;
 	}
 	

@@ -1,19 +1,18 @@
-package com.AkkaVisualDebugger;
+package com.AkkaVisualDebugger.actorEnumerationTest;
 
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
 
-public class PrintAllActor extends AbstractActor {
+public class DefaultActor extends AbstractActor {
 
 	public static Props props() {
-		return Props.create(PrintAllActor.class, () -> new PrintAllActor());
+		return Props.create(DefaultActor.class, () -> new DefaultActor());
 	}
 	
 	@Override
 	public Receive createReceive() {
 		return ReceiveBuilder.create()
-				.matchAny(m -> System.out.println(m))
 				.build();
 	}
 	

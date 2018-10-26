@@ -1,4 +1,4 @@
-package com.AkkaVisualDebugger;
+package com.AkkaVisualDebugger.actorEnumerationTest;
 
 import com.akkaVisualizor.AkkaVisualDebugger;
 
@@ -13,20 +13,10 @@ public class MainTest {
 		
 		AkkaVisualDebugger log = AkkaVisualDebugger.create(system);
 		
-		System.out.println("logging new ActorType");
-		
-		log.logActorType("default1", DefaultActor::props);
-		
-		
-		sleep(1000);
-		System.out.println("logging new ActorType");
-		log.logActorType("default2", DefaultActor::props);
-		
-		sleep(1000);
-		System.out.println("logging new ActorType");
-		log.logActorType("default3", DefaultActor::props);
-		
-		sleep(5000);
+		log.logActorType("default", DefaultActor::props);
+		System.out.println("try creating actors (10 sec left before print)");
+			
+		sleep(10000);
 		ActorRef printer = system.actorOf(PrintAllActor.props(), "printer");
 		identifyActor(system, printer, "/user/*");
 		//system.terminate();

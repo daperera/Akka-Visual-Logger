@@ -31,6 +31,7 @@ public class GlobalModel {
 	private final List<VisualChannel> selectedChannelList;
 	private final VisualMessageTypeList visualMessageTypeList;
 	private final VisualActorTypeList visualActorTypeList;
+	private VisualMessageType selectedVisualMessageType;
 
 	public GlobalModel(Context context) {
 		this.context = context;
@@ -44,7 +45,7 @@ public class GlobalModel {
 	}
 
 	/* ********************************************** *
-	 * *      ACTOR SELECTION GESTION FUNCTIONS     * *
+	 * *      NODE SELECTION GESTION FUNCTIONS      * *
 	 * ********************************************** */
 
 	public void selectActor(VisualActor actor) {
@@ -71,6 +72,10 @@ public class GlobalModel {
 		} else {
 			selectChannelUtil(channel);
 		}
+	}
+
+	public void selectMessageType(VisualMessageType messageType) {
+		selectedVisualMessageType = messageType;
 	}
 
 	public void simulationPaneClicked() {
@@ -100,17 +105,19 @@ public class GlobalModel {
 	 * *      CREATION FUNCTIONS       * *
 	 * ********************************* */ 
 
+	/**
+	 * create an actor from an actor type, its name and its coordinate on screen 
+	 * @param name : if null, then  
+	 * @param x
+	 * @param y
+	 * @throws Exception
+	 */
+
 	private void createActor(VisualActorType t, String name, double x, double y) throws Exception {
 		Actor actor = context.getAkkaModel().createActor(t.getActorType(), name);
+		
 		// if no exception thrown
-		VisualActor visualActor = new VisualActor(context, actor, name, x, y);
-		context.getApp().createActor(visualActor, name, x, y);
-	}
-
-	public void createActor(String name, double x, double y) throws Exception {
-		Actor actor = context.getAkkaModel().createActor(name);
-		// if no exception thrown
-		VisualActor visualActor = new VisualActor(context, actor, name, x, y);
+		VisualActor visualActor = new VisualActor(context, actor, actor.getName(), x, y);
 		context.getApp().createActor(visualActor, name, x, y);
 	}
 
@@ -147,15 +154,29 @@ public class GlobalModel {
 	}
 
 	public void createMessageTo(VisualActor target) {
-		for(VisualActor source : selectedActorList) {
-			// add to akka model
-			Message message = context.getAkkaModel().sendMessage(null, source.getActor(), target.getActor());
+		try {
+			if(selectedVisualMessageType == null) {
+				throw new Exception("Error : no message selected");
+			}
+			if(target == null) {
+				throw new Exception("Error : no target selected");
+			}
+			for(VisualActor source : selectedActorList) {
+				// add to akka model
 
-			// add internally
-			VisualMessage visualMessage = new VisualMessage(message, source, target);
+				Message message = context.getAkkaModel()
+						.sendMessage(selectedVisualMessageType.getMessageType(), 
+								source.getActor(), 
+								target.getActor());
 
-			// add to view
-			context.getApp().createMessage(visualMessage);
+				// add internally
+				VisualMessage visualMessage = new VisualMessage(message, source, target);
+
+				// add to view
+				context.getApp().createMessage(visualMessage);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -214,7 +235,7 @@ public class GlobalModel {
 		while(!correctName) {
 			// get name from user
 			name = context.getApp().askActorName(restarted);
-			
+
 			// try to create actor with this name
 			try {
 				createActor(t, name, x, y);
@@ -331,7 +352,6 @@ public class GlobalModel {
 		channelList.remove(channel);
 		it.remove();
 	}
-
 
 
 }

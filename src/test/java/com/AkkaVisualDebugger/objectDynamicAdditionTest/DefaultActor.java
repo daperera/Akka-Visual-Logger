@@ -1,4 +1,4 @@
-package com.AkkaVisualDebugger;
+package com.AkkaVisualDebugger.objectDynamicAdditionTest;
 
 import akka.actor.AbstractActor;
 import akka.actor.Props;

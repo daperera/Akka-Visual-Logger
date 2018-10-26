@@ -14,7 +14,7 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
-public class ActorTypeView extends ListCell<VisualActorType> {
+public class ActorTypeListView extends ListCell<VisualActorType> {
 
 	private static final int size = 60;
 	private static final double radius = size/2;
@@ -24,7 +24,7 @@ public class ActorTypeView extends ListCell<VisualActorType> {
 	private static final StrokeType strokeType = StrokeType.INSIDE;
 	private static final double strokeWidth = 0.5;
 	
-	public ActorTypeView(Context context) {
+	public ActorTypeListView(Context context) {
 
 		// allow drag and drop
 		setOnDragDetected(e -> context.getGlobalMouseController().onDragDetected(this, e));

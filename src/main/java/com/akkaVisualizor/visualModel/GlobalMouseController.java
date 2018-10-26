@@ -6,12 +6,14 @@ import java.util.Map;
 
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.javaFX.pane.SimulatorPane;
-import com.akkaVisualizor.javaFX.view.ActorTypeView;
+import com.akkaVisualizor.javaFX.view.ActorTypeListView;
 import com.akkaVisualizor.javaFX.view.ActorView;
 import com.akkaVisualizor.javaFX.view.ChannelView;
+import com.akkaVisualizor.javaFX.view.MessageTypeListView;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
 import com.akkaVisualizor.visualModel.visual.VisualActorType;
 import com.akkaVisualizor.visualModel.visual.VisualChannel;
+import com.akkaVisualizor.visualModel.visual.VisualMessageType;
 
 import javafx.application.Platform;
 import javafx.scene.input.ClipboardContent;
@@ -31,7 +33,7 @@ public class GlobalMouseController {
 		currentlyActiveKeys = new HashMap<>();
 	}
 
-	public void onDragDetected(ActorTypeView view, MouseEvent e) {
+	public void onDragDetected(ActorTypeListView view, MouseEvent e) {
 		// create clipboard
 		ClipboardContent content = new ClipboardContent();
 		content.putString(view.getItem().getActorType().getType());
@@ -39,13 +41,13 @@ public class GlobalMouseController {
 
 		// create dragboard
 		Dragboard dragboard = context.getApp().getScene().startDragAndDrop(TransferMode.MOVE);
-		dragboard.setDragView(ActorTypeView.dragboardImage(view.getItem().getActorType().getType()));
+		dragboard.setDragView(ActorTypeListView.dragboardImage(view.getItem().getActorType().getType()));
 		dragboard.setContent(content);
 
 		e.consume();
 	}
 	
-	public void onDragOver(ActorTypeView view, DragEvent e) {
+	public void onDragOver(ActorTypeListView view, DragEvent e) {
         e.acceptTransferModes(TransferMode.ANY);
         e.consume();
 	}
@@ -124,6 +126,11 @@ public class GlobalMouseController {
 		}
 		e.consume();
 	}
+	
+	public void onMousePressed(MessageTypeListView messageTypeListView, MouseEvent e) {
+		VisualMessageType messageType = messageTypeListView.getItem();
+		context.getModel().selectMessageType(messageType);
+	}
 
 	public void onKeyPressed(KeyEvent e) {
 		String codeString = e.getCode().toString();
@@ -149,6 +156,8 @@ public class GlobalMouseController {
 	private void keyReleased(KeyCode code) {
 		// do something when key is released
 	}
+
+
 
 	
 

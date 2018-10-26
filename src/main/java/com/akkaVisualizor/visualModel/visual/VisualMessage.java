@@ -19,6 +19,7 @@ public class VisualMessage {
 	
 	public VisualMessage(Message message, VisualActor source, VisualActor target) {
 		this.message = message;
+		
 		t = new SimpleDoubleProperty(0);
 		DoubleBinding uX = target.getXProperty().subtract(source.getXProperty());
 		DoubleBinding uY = target.getYProperty().subtract(source.getYProperty());

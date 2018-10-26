@@ -118,6 +118,7 @@ public class GlobalModel {
 		
 		// if no exception thrown
 		VisualActor visualActor = new VisualActor(context, actor, actor.getName(), x, y);
+		actorToVisualActor.put(actor, visualActor);
 		context.getApp().createActor(visualActor, name, x, y);
 	}
 
@@ -130,6 +131,7 @@ public class GlobalModel {
 		double y = ThreadLocalRandom.current().nextDouble(0, context.getApp().getScene().getHeight());
 
 		VisualActor visualActor = new VisualActor(context, actor, name, x, y);
+		actorToVisualActor.put(actor, visualActor);
 		try {
 			context.getApp().createActor(visualActor, name, x, y);
 		} catch (Exception e) {
@@ -140,7 +142,7 @@ public class GlobalModel {
 	public void deleteActor(VisualActor visualActor) {
 		// delete in akka model
 		context.getAkkaModel().deleteActor(visualActor.getActor());
-
+		
 		// delete internally (automatically impacts on view)
 		actorInternalDeletion(visualActor);
 	}
@@ -148,7 +150,7 @@ public class GlobalModel {
 	public void notifyActorDeleted(Actor actor) {
 		// get corresponding visualActor
 		VisualActor visualActor = actorToVisualActor.get(actor);
-
+		
 		// delete internally (automatically impacts on view)
 		actorInternalDeletion(visualActor);
 	}
@@ -184,7 +186,14 @@ public class GlobalModel {
 		// fetch source and target of message
 		VisualActor source = actorToVisualActor.get(message.getSource());
 		VisualActor target = actorToVisualActor.get(message.getTarget());
-
+		if(message.getSource()==null) {
+			System.out.println("source is null");
+		}
+		if(message.getTarget()==null) {
+			System.out.println("target is null");
+		}
+		
+		
 		// add internally
 		VisualMessage visualMessage = new VisualMessage(message, source, target);
 

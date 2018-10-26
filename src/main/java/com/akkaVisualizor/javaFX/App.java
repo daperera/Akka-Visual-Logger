@@ -14,6 +14,7 @@ import com.akkaVisualizor.visualModel.visual.VisualChannel;
 import com.akkaVisualizor.visualModel.visual.VisualMessage;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
@@ -68,7 +69,7 @@ public class App extends Application {
 
 	public void createMessage(VisualMessage visualMessage) {
 		MessageView messageView = new MessageView(context, visualMessage);
-		root.getSimulationPane().getChildren().add(messageView);
+		Platform.runLater(() -> root.getSimulationPane().getChildren().add(messageView));
 	}
 
 	public Scene getScene() {

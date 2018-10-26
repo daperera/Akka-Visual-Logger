@@ -1,28 +1,23 @@
 package com.akkaVisualizor.javaFX.pane;
 
-import java.util.Optional;
-
 import com.akkaVisualizor.Context;
 
-import javafx.event.ActionEvent;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.AnchorPane;
 
 public class SimulatorPane extends AnchorPane {
-
+/*
 	private final Context context;
 	private double newActorX, newActorY;
-
+*/
 	public SimulatorPane(Context context) {
 		// init object var
-		this.context = context;
+	//	this.context = context;
 
 		// init style
 		setStyle("-fx-background-color: black;");
 
 		// create ContextMenu
+		/*
 		ContextMenu contextMenu = new ContextMenu();
 		MenuItem createActor = new MenuItem("Create Actor");
 		createActor.setOnAction(e -> createActor(e));
@@ -32,12 +27,16 @@ public class SimulatorPane extends AnchorPane {
 			newActorX=e.getX(); // get click coordinate in order to create new actor
 			newActorY=e.getY(); // at the correct place
 		});
+		*/
 		
 		// create mouse listener
 		setOnMousePressed(e -> context.getGlobalMouseController().onMousePressed(this, e));
 		
+		// handle drag and drop
+		setOnDragDropped(e -> context.getGlobalMouseController().onDragDropped(this, e));
+		setOnDragOver(e -> context.getGlobalMouseController().onDragOver(this, e));
 	}
-
+/*
 	private void createActor(ActionEvent e) {
 		boolean restarted = false;
 		boolean correctName = false;
@@ -72,4 +71,5 @@ public class SimulatorPane extends AnchorPane {
 		}
 
 	}
+	*/
 }

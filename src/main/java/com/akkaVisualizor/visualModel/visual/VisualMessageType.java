@@ -1,4 +1,4 @@
-package com.akkaVisualizor.visualModel;
+package com.akkaVisualizor.visualModel.visual;
 
 import com.akkaVisualizor.akkaModel.MessageType;
 

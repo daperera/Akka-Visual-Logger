@@ -10,10 +10,7 @@ public class MenuPane extends SplitPane {
 	private static double minHeight = 300;
 	private static double minWidth = 200;
 	
-	private final Context context;
 	public MenuPane(Context context) {
-		this.context = context;
-		
 		setMinSize(minWidth, minHeight);
 		setOrientation(Orientation.HORIZONTAL);
 		

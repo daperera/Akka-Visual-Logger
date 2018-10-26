@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.akkaVisualizor.Context;
+import com.akkaVisualizor.akkaModel.ActorType.SerializableSupplier;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.InvalidActorNameException;
 import akka.actor.Props;
 
 public class AkkaModel {
@@ -38,9 +40,9 @@ public class AkkaModel {
 		return null;
 	}
 
-	public Actor createActor(ActorType actorType, String name) {
+	public Actor createActor(ActorType actorType, String name) throws Exception {
 		// create actor internally
-		ActorRef actorRef = actorType.getInstance(name);
+		ActorRef actorRef = getInstance(actorType, name);
 		Actor actor = new Actor(actorRef, name, actorType);
 		actorRefToActor.put(actorRef, actor);
 
@@ -51,7 +53,7 @@ public class AkkaModel {
 		// work out actor type
 		ActorType actorType = null;
 		for(ActorType type : actorTypeList) {
-			if(actorRef.getClass().equals(type.getTypeClass())) {
+			if(actorRef.getClass().equals(type.getClass())) {
 				actorType = type;
 			}
 		}
@@ -113,8 +115,8 @@ public class AkkaModel {
 		message.setDelivered();
 	}
 
-	public void logActorType(Class<? extends ActorRef> typeClass, Supplier<Props> typeConstructor) {
-		// add actoryp internally
+	public void logActorType(String typeClass, SerializableSupplier<Props> typeConstructor) {
+		// add actor internally
 		ActorType type = new ActorType(typeClass, typeConstructor, system);
 		actorTypeList.add(type);
 		
@@ -130,4 +132,15 @@ public class AkkaModel {
 		// notify model ?
 		context.getModel().notifyMessageTypeCreated(type);
 	}
+	
+	public ActorRef getInstance(ActorType type, String name) throws Exception {
+		try {
+			return system.actorOf(type.getTypeConstructor().get(), name);
+		} catch(InvalidActorNameException e) {
+			throw new InvalidActorNameException("name already used ["+ name + "]");
+		} catch(Exception e) {
+			throw e;
+		}
+	}
+	
 }

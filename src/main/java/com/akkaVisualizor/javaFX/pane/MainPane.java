@@ -10,12 +10,10 @@ public class MainPane extends SplitPane {
 	private static double defaultHeight = 500;
 	private static double defaultWidth = 800;
 	
-	private final Context context;
 	private final MenuPane menuPane;
 	private final SimulatorPane simulationPane;
 	
 	public MainPane(Context context) {
-		this.context = context;
 		menuPane = new MenuPane(context);
 		simulationPane = new SimulatorPane(context); 
 		getItems().addAll(menuPane, simulationPane);

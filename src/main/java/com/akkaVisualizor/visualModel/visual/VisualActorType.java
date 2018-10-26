@@ -1,13 +1,23 @@
-package com.akkaVisualizor.visualModel;
+package com.akkaVisualizor.visualModel.visual;
+
+import java.io.Serializable;
 
 import com.akkaVisualizor.akkaModel.ActorType;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.input.DataFormat;
 
-public class VisualActorType {
+public class VisualActorType implements Serializable {
+	
+	private static final long serialVersionUID = 201810260117L;
 	private final ActorType actorType;
-	private final BooleanProperty changedProperty;
+	
+	
+	private transient final BooleanProperty changedProperty;
+	
+	public static final DataFormat format = new DataFormat("com.akkaVisualizor.visualModel.visual.VisualActorType");
+	
 	public VisualActorType(ActorType actorType) {
 		this.actorType = actorType;
 		this.changedProperty = new SimpleBooleanProperty(false);

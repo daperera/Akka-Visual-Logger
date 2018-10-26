@@ -1,4 +1,4 @@
-package com.akkaVisualizor.visualModel;
+package com.akkaVisualizor.visualModel.visual;
 
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Actor;
@@ -15,6 +15,7 @@ public class VisualActor {
 	private DoubleProperty x, y;
 	private Actor actor;
 	private BooleanProperty deletedProperty;
+	
 	
 	public VisualActor(Context context, Actor actor, String name, double x, double y) {
 		this.actor = actor;

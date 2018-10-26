@@ -13,20 +13,34 @@ import com.akkaVisualizor.akkaModel.ActorType;
 import com.akkaVisualizor.akkaModel.Channel;
 import com.akkaVisualizor.akkaModel.Message;
 import com.akkaVisualizor.akkaModel.MessageType;
+import com.akkaVisualizor.visualModel.visual.VisualActor;
+import com.akkaVisualizor.visualModel.visual.VisualActorList;
+import com.akkaVisualizor.visualModel.visual.VisualActorType;
+import com.akkaVisualizor.visualModel.visual.VisualActorTypeList;
+import com.akkaVisualizor.visualModel.visual.VisualChannel;
+import com.akkaVisualizor.visualModel.visual.VisualMessage;
+import com.akkaVisualizor.visualModel.visual.VisualMessageType;
+import com.akkaVisualizor.visualModel.visual.VisualMessageTypeList;
 
 public class GlobalModel {
 	private final Context context;
 	private final Map<Actor, VisualActor> actorToVisualActor;
+	private final VisualActorList visualActorList;
 	private final List<VisualChannel> channelList;
 	private final List<VisualActor> selectedActorList;
 	private final List<VisualChannel> selectedChannelList;
+	private final VisualMessageTypeList visualMessageTypeList;
+	private final VisualActorTypeList visualActorTypeList;
 
 	public GlobalModel(Context context) {
 		this.context = context;
 		actorToVisualActor = new HashMap<Actor, VisualActor>();
+		visualActorList = new VisualActorList();
 		channelList = new ArrayList<VisualChannel>();
 		selectedActorList = new ArrayList<VisualActor>();
 		selectedChannelList = new ArrayList<VisualChannel>();
+		visualActorTypeList = new VisualActorTypeList();
+		visualMessageTypeList = new VisualMessageTypeList();
 	}
 
 	/* ********************************************** *
@@ -72,7 +86,7 @@ public class GlobalModel {
 			VisualActor actor = iter1.next();
 			actorInternalDeletion(actor, iter1);
 		};
-		
+
 		//delete selected channels
 		ListIterator<VisualChannel> iter2 = selectedChannelList.listIterator();
 		while(iter2.hasNext()){
@@ -85,6 +99,13 @@ public class GlobalModel {
 	/* ********************************* *
 	 * *      CREATION FUNCTIONS       * *
 	 * ********************************* */ 
+
+	private void createActor(VisualActorType t, String name, double x, double y) throws Exception {
+		Actor actor = context.getAkkaModel().createActor(t.getActorType(), name);
+		// if no exception thrown
+		VisualActor visualActor = new VisualActor(context, actor, name, x, y);
+		context.getApp().createActor(visualActor, name, x, y);
+	}
 
 	public void createActor(String name, double x, double y) throws Exception {
 		Actor actor = context.getAkkaModel().createActor(name);
@@ -166,6 +187,45 @@ public class GlobalModel {
 		}
 	}
 
+	public void notifyActorTypeCreated(ActorType actorType) {
+		visualActorTypeList.add(new VisualActorType(actorType));
+	}
+
+	public void notifyMessageTypeCreated(MessageType messageType) {
+		visualMessageTypeList.add(new VisualMessageType(messageType));
+	}
+
+	public VisualActorTypeList getVisualActorTypeList() {
+		return visualActorTypeList;
+	}
+
+	public VisualMessageTypeList getVisualMessageTypeList() {
+		return visualMessageTypeList;
+	}
+
+	public VisualActorList getVisualActorList() {
+		return visualActorList;
+	}
+
+	// ask for the actor name and create it
+	public void requestCreateActorFromType(VisualActorType t, double x, double y) {
+		String name;
+		boolean correctName = false, restarted = false;
+		while(!correctName) {
+			// get name from user
+			name = context.getApp().askActorName(restarted);
+			
+			// try to create actor with this name
+			try {
+				createActor(t, name, x, y);
+				correctName = true;
+			} catch(Exception exception) {
+				exception.printStackTrace();
+				restarted = true;
+			}
+		}
+	}
+
 	/* ********************************* *
 	 * *              UTILS            * *
 	 * ********************************* */ 
@@ -223,10 +283,10 @@ public class GlobalModel {
 
 	private void actorInternalDeletion(VisualActor actor) {
 		actor.delete();
-		
+
 		actorToVisualActor.remove(actor);
 		selectedActorList.remove(actor);
-		
+
 		// delete channels connected to this actors
 		ListIterator<VisualChannel> iter = channelList.listIterator();
 		while(iter.hasNext()){
@@ -236,13 +296,13 @@ public class GlobalModel {
 			}
 		};
 	}
-	
+
 	private void actorInternalDeletion(VisualActor actor, ListIterator<VisualActor> it) {
 		actor.delete();	
-		
+
 		actorToVisualActor.remove(actor);
 		it.remove();
-		
+
 		// delete channels connected to this actors
 		ListIterator<VisualChannel> iter = channelList.listIterator();
 		while(iter.hasNext()){
@@ -259,8 +319,8 @@ public class GlobalModel {
 		channelList.remove(channel);
 		selectedChannelList.remove(channel);
 	}
-	*/
-	
+	 */
+
 	private void channelInternalDeletionFromChannelList(VisualChannel channel, ListIterator<VisualChannel> it) {
 		channel.delete();
 		it.remove();
@@ -272,11 +332,6 @@ public class GlobalModel {
 		it.remove();
 	}
 
-	public void notifyActorTypeCreated(ActorType type) {
-		
-	}
 
-	public void notifyMessageTypeCreated(MessageType type) {
-		
-	}
+
 }

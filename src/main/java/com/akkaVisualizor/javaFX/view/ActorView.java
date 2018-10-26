@@ -2,7 +2,7 @@ package com.akkaVisualizor.javaFX.view;
 
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Configuration;
-import com.akkaVisualizor.visualModel.VisualActor;
+import com.akkaVisualizor.visualModel.visual.VisualActor;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -35,9 +35,8 @@ public class ActorView extends StackPane {
 		text.setBoundsType(TextBoundsType.VISUAL); 
 		getChildren().addAll(circle, text);
 
-
+		
 		// init style
-
 		circle.setRadius(conf.getActorRadius());
 		circle.setFill(conf.getActorFill());
 		circle.setOpacity(conf.getActorOpacity());

@@ -9,9 +9,10 @@ public class DuplicablePane extends TabPane {
 
 	public DuplicablePane(Context context) {
 		
-		Tab nodePane = new Tab("Actors", new NodePane());
-		Tab nodeTypePane = new Tab("Actor Types", new NodeTypePane());
-		Tab messagePane = new Tab("Mesages", new MessagePane());
+		Tab nodePane = new Tab("Actors", new ActorPane(context));
+		Tab nodeTypePane = new Tab("Actor Types", new ActorTypePane(context));
+		Tab messagePane = new Tab("Messages", new MessagePane(context));
+		//Tab test = new Tab("test", new ListOrganizer());
 		nodePane.setClosable(false);
 		nodeTypePane.setClosable(false);
 		messagePane.setClosable(false);

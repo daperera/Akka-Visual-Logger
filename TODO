@@ -1,5 +1,4 @@
 TODO List
-- drag&drop ActorType to simulatorPane : create a new node of corresponding type
 - drag&drop Message to Node : append Message to authorizedMessage list ?
 - drag&drop NodeItem to simulatorPane : update location of NodeView
 --> VisualNode is model for NodeItem abd NodeView (share selection)
@@ -9,7 +8,9 @@ TODO List
 - switch between record mode and idle mode
 - replay mode allowed
 - add asyncrhonizer module that allow async use of the logger from akka user
-
-
 - createActor() accept Akka Parent as a parameter (ajust location of created actor)
 - unify selectedActorList and SelectedChannelList in a single selectedItemList, and simplify processing
+
+DONE List
+- drag&drop ActorType to simulatorPane : create a new node of corresponding type
+

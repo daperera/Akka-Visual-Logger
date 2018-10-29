@@ -4,16 +4,16 @@ import com.akkaVisualizor.akkaModel.AkkaModel;
 import com.akkaVisualizor.akkaModel.Configuration;
 import com.akkaVisualizor.javaFX.App;
 import com.akkaVisualizor.visualModel.GlobalModel;
-import com.akkaVisualizor.visualModel.GlobalMouseController;
+import com.akkaVisualizor.visualModel.GlobalController;
 
 public class Context {
 	private Configuration configuration;
 	private AkkaModel akkaModel;
-	private GlobalMouseController globalMouseController; 
+	private GlobalController globalMouseController; 
 	private GlobalModel globalModel;
 	private App app;
 	
-	public void set(Configuration configuration, AkkaModel akkaModel, GlobalMouseController globalMouseController,
+	public void set(Configuration configuration, AkkaModel akkaModel, GlobalController globalMouseController,
 			GlobalModel model, App visualizor) {
 		this.configuration = configuration;
 		this.akkaModel = akkaModel;
@@ -33,7 +33,7 @@ public class Context {
 	public App getApp() {
 		return app;
 	}
-	public GlobalMouseController getGlobalMouseController() {
+	public GlobalController getGlobalMouseController() {
 		return globalMouseController;
 	}
 }

@@ -1,6 +1,6 @@
 package com.AkkaVisualDebugger.actorEnumerationTest;
 
-import com.akkaVisualizor.AkkaVisualDebugger;
+import com.akkaVisualizor.AkkaVisualLogger;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
@@ -11,7 +11,7 @@ public class MainTest {
 	public static void main(String[] args) {
 		ActorSystem system = ActorSystem.create();
 		
-		AkkaVisualDebugger log = AkkaVisualDebugger.create(system);
+		AkkaVisualLogger log = AkkaVisualLogger.create(system);
 		
 		log.logActorType("default", DefaultActor::props);
 		System.out.println("try creating actors (10 sec left before print)");

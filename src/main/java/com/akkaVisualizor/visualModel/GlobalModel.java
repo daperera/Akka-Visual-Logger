@@ -24,7 +24,8 @@ import com.akkaVisualizor.visualModel.visual.VisualMessageTypeList;
 
 public class GlobalModel {
 	private final Context context;
-	private final Map<Actor, VisualActor> actorToVisualActor;
+//	private final Map<Actor, VisualActor> actorToVisualActor;
+	private final Map<Channel, VisualChannel> channelToVisualChannel;
 	private final VisualActorList visualActorList;
 	private final List<VisualChannel> channelList;
 	private final List<VisualActor> selectedActorList;
@@ -35,11 +36,12 @@ public class GlobalModel {
 
 	public GlobalModel(Context context) {
 		this.context = context;
-		actorToVisualActor = new HashMap<Actor, VisualActor>();
+//		actorToVisualActor = new HashMap<>();
+		channelToVisualChannel = new HashMap<>();
 		visualActorList = new VisualActorList();
-		channelList = new ArrayList<VisualChannel>();
-		selectedActorList = new ArrayList<VisualActor>();
-		selectedChannelList = new ArrayList<VisualChannel>();
+		channelList = new ArrayList<>();
+		selectedActorList = new ArrayList<>();
+		selectedChannelList = new ArrayList<>();
 		visualActorTypeList = new VisualActorTypeList();
 		visualMessageTypeList = new VisualMessageTypeList();
 	}
@@ -67,7 +69,7 @@ public class GlobalModel {
 	}
 
 	public void addToSelectedChannelList(VisualChannel channel) {
-		if(selectedActorList.contains(channel)) {
+		if(selectedChannelList.contains(channel)) {
 			deselectChannelUtil(channel);
 		} else {
 			selectChannelUtil(channel);
@@ -90,6 +92,8 @@ public class GlobalModel {
 		while(iter1.hasNext()){
 			VisualActor actor = iter1.next();
 			actorInternalDeletion(actor, iter1);
+			
+			
 		};
 
 		//delete selected channels
@@ -108,9 +112,7 @@ public class GlobalModel {
 	/**
 	 * create an actor from an actor type, its name and its coordinate on screen 
 	 * @param name : if null, then  
-	 * @param x
-	 * @param y
-	 * @throws Exception
+	 * @throws Exception if akka system can't create corresponding actor (duplicate name)
 	 */
 
 	private void createActor(VisualActorType t, String name, double x, double y) throws Exception {
@@ -118,8 +120,9 @@ public class GlobalModel {
 		
 		// if no exception thrown
 		VisualActor visualActor = new VisualActor(context, actor, actor.getName(), x, y);
-		actorToVisualActor.put(actor, visualActor);
-		context.getApp().createActor(visualActor, name, x, y);
+//		actorToVisualActor.put(actor, visualActor);
+		visualActorList.add(visualActor);
+		context.getApp().createActor(visualActor, actor.getName(), x, y);
 	}
 
 	public void notifyActorCreated(Actor actor) {
@@ -131,7 +134,8 @@ public class GlobalModel {
 		double y = ThreadLocalRandom.current().nextDouble(0, context.getApp().getScene().getHeight());
 
 		VisualActor visualActor = new VisualActor(context, actor, name, x, y);
-		actorToVisualActor.put(actor, visualActor);
+//		actorToVisualActor.put(actor, visualActor);
+		visualActorList.add(visualActor);
 		try {
 			context.getApp().createActor(visualActor, name, x, y);
 		} catch (Exception e) {
@@ -149,7 +153,8 @@ public class GlobalModel {
 
 	public void notifyActorDeleted(Actor actor) {
 		// get corresponding visualActor
-		VisualActor visualActor = actorToVisualActor.get(actor);
+//		VisualActor visualActor = actorToVisualActor.get(actor);
+		VisualActor visualActor = visualActorList.get(actor);
 		
 		// delete internally (automatically impacts on view)
 		actorInternalDeletion(visualActor);
@@ -184,8 +189,10 @@ public class GlobalModel {
 
 	public void notifyMessageCreated(Message message) {
 		// fetch source and target of message
-		VisualActor source = actorToVisualActor.get(message.getSource());
-		VisualActor target = actorToVisualActor.get(message.getTarget());
+//		VisualActor source = actorToVisualActor.get(message.getSource());
+//		VisualActor target = actorToVisualActor.get(message.getTarget());
+		VisualActor source = visualActorList.get(message.getSource());
+		VisualActor target = visualActorList.get(message.getTarget());
 		if(message.getSource()==null) {
 			System.out.println("source is null");
 		}
@@ -201,7 +208,7 @@ public class GlobalModel {
 		context.getApp().createMessage(visualMessage);
 	}
 
-	public void createBidirectionalChannelTo(VisualActor target) {
+	public void createChannelTo(VisualActor target) {
 		for(VisualActor source : selectedActorList) {
 			if(!channelAlreadyExist(source, target)) {
 				// add to akka model
@@ -212,9 +219,31 @@ public class GlobalModel {
 				channelList.add(visualChannel);
 
 				// add channel to view
-				context.getApp().createBidirectionalChannel(visualChannel);
+				context.getApp().createChannel(visualChannel);
 			}
 		}
+	}
+	
+	public void notifyChannelCreated(Channel channel) {
+		// add internally
+//		VisualActor source = actorToVisualActor.get(channel.getSource());
+//		VisualActor target = actorToVisualActor.get(channel.getTarget());
+		VisualActor source = visualActorList.get(channel.getSource());
+		VisualActor target = visualActorList.get(channel.getTarget());
+		
+		VisualChannel visualChannel = new VisualChannel(context, channel, source, target);
+		channelList.add(visualChannel);
+		channelToVisualChannel.put(channel, visualChannel);
+
+		// add channel to view
+		context.getApp().createChannel(visualChannel);
+	}
+	
+	public void notifyChannelDeleted(Channel channel) {
+		// delete internally 
+		VisualChannel visualChannel = channelToVisualChannel.get(channel);
+		channelInternalDeletion(visualChannel); // automatically impact on view
+		
 	}
 
 	public void notifyActorTypeCreated(ActorType actorType) {
@@ -263,12 +292,12 @@ public class GlobalModel {
 
 	private void selectActorUtil(VisualActor actor) {
 		selectedActorList.add(actor);
-		actor.setSelected();
+		actor.select();
 	}
 
 	private void deselectActorUtil(VisualActor actor) {
 		selectedActorList.remove(actor);
-		actor.setDeselected();
+		actor.deselect();
 	}
 
 	private void deselectAllActorUtil() {
@@ -276,7 +305,7 @@ public class GlobalModel {
 		ListIterator<VisualActor> iter = selectedActorList.listIterator();
 		while(iter.hasNext()){
 			VisualActor actor = iter.next();
-			actor.setDeselected();
+			actor.deselect();
 			iter.remove();
 		};
 	}
@@ -312,9 +341,9 @@ public class GlobalModel {
 	}
 
 	private void actorInternalDeletion(VisualActor actor) {
-		actor.delete();
-
-		actorToVisualActor.remove(actor);
+//		actor.delete();
+//		actorToVisualActor.remove(actor.getActor());
+		visualActorList.remove(actor.getActor());
 		selectedActorList.remove(actor);
 
 		// delete channels connected to this actors
@@ -330,7 +359,8 @@ public class GlobalModel {
 	private void actorInternalDeletion(VisualActor actor, ListIterator<VisualActor> it) {
 		actor.delete();	
 
-		actorToVisualActor.remove(actor);
+//		actorToVisualActor.remove(actor.getActor());
+		visualActorList.remove(actor.getActor());
 		it.remove();
 
 		// delete channels connected to this actors
@@ -343,22 +373,23 @@ public class GlobalModel {
 		};
 	}
 
-	/*
 	private void channelInternalDeletion(VisualChannel channel) {
-		channel.delete();
+		channel.delete(); // impact on view
 		channelList.remove(channel);
 		selectedChannelList.remove(channel);
+		channelToVisualChannel.remove(channel.getChannel());
 	}
-	 */
 
 	private void channelInternalDeletionFromChannelList(VisualChannel channel, ListIterator<VisualChannel> it) {
-		channel.delete();
-		it.remove();
+		channel.delete(); // impact on view
 		selectedChannelList.remove(channel);
+		channelToVisualChannel.remove(channel.getChannel());
+		it.remove();
 	}
 	private void channelInternalDeletionFromSelectedChannelList(VisualChannel channel, ListIterator<VisualChannel> it) {
-		channel.delete();
+		channel.delete(); // impact on view
 		channelList.remove(channel);
+		channelToVisualChannel.remove(channel.getChannel());
 		it.remove();
 	}
 

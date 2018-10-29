@@ -1,6 +1,6 @@
 package com.AkkaVisualDebugger.messageTest;
 
-import com.akkaVisualizor.AkkaVisualDebugger;
+import com.akkaVisualizor.AkkaVisualLogger;
 
 import akka.actor.ActorSystem;
 
@@ -8,7 +8,7 @@ public class MainTest {
 	public static void main(String[] args) {
 		ActorSystem system = ActorSystem.create();
 		
-		AkkaVisualDebugger log = AkkaVisualDebugger.create(system);
+		AkkaVisualLogger log = AkkaVisualLogger.create(system);
 		
 		System.out.println("create Sender and Receiver actor, and send query or reply message from one to another");
 		log.logActorType("Sender", Sender::props);

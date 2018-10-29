@@ -26,11 +26,11 @@ public class VisualActor {
 		deletedProperty = new SimpleBooleanProperty(false);
 	}
 
-	public void setSelected() {
+	public void select() {
 		selectedProperty.set(true);
 	}
 
-	public void setDeselected() {
+	public void deselect() {
 		selectedProperty.set(false);
 	}
 

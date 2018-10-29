@@ -3,7 +3,7 @@ package com.akkaVisualizor.javaFX;
 import java.io.IOException;
 import java.util.Optional;
 
-import com.akkaVisualizor.AkkaVisualDebugger;
+import com.akkaVisualizor.AkkaVisualLogger;
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.javaFX.pane.MainPane;
 import com.akkaVisualizor.javaFX.view.ActorView;
@@ -24,10 +24,10 @@ public class App extends Application {
 	private MainPane root;
 	private Scene scene;
 
-	private static AkkaVisualDebugger appEntryPoint;
+	private static AkkaVisualLogger appEntryPoint;
 	private static Context context;
 
-	public static void launch(AkkaVisualDebugger appEntryPoint, Context context) {
+	public static void launch(AkkaVisualLogger appEntryPoint, Context context) {
 		App.appEntryPoint = appEntryPoint;
 		App.context = context;
 
@@ -62,7 +62,7 @@ public class App extends Application {
 		System.out.println("NOT YET IMPLEMENTED");
 	}
 
-	public void createBidirectionalChannel(VisualChannel visualChannel) {
+	public void createChannel(VisualChannel visualChannel) {
 		ChannelView channelView = new ChannelView(context, visualChannel);
 		root.getSimulationPane().getChildren().add(channelView);
 	}
@@ -82,6 +82,7 @@ public class App extends Application {
 		// create dialog
 		TextInputDialog dialog = new TextInputDialog();
 		if(restarted) {
+			dialog.setHeaderText("Invalid name. Please enter an other name");
 		} else {
 			dialog.setHeaderText("Please enter the name of the new Actor");
 		}

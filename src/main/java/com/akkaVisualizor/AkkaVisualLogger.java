@@ -7,28 +7,29 @@ import com.akkaVisualizor.akkaModel.AkkaModel;
 import com.akkaVisualizor.akkaModel.Configuration;
 import com.akkaVisualizor.javaFX.App;
 import com.akkaVisualizor.visualModel.GlobalModel;
-import com.akkaVisualizor.visualModel.GlobalMouseController;
+import com.akkaVisualizor.visualModel.GlobalController;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.actor.Actor;
 
-public class AkkaVisualDebugger {
+public class AkkaVisualLogger {
 
 	private AkkaModel akkaModel;
 	private Context	context;
 
 	private boolean start;
 
-	private static AkkaVisualDebugger instance;
+	private static AkkaVisualLogger instance;
 
-	public static AkkaVisualDebugger getInstance() {
-		AkkaVisualDebugger res = null;
+	public static AkkaVisualLogger getInstance() {
+		AkkaVisualLogger res = null;
 		try {
 			if(instance !=null) {
 				res = instance;
 			} else {
-				throw new Exception("AkkaVisualDebugger not yet started");
+				throw new Exception("AkkaVisualLogger has not started yet");
 			}
 		} catch( Exception e) {
 			e.printStackTrace();
@@ -36,15 +37,15 @@ public class AkkaVisualDebugger {
 		return res;
 	}
 
-	public static synchronized AkkaVisualDebugger create(ActorSystem system) {
+	public static synchronized AkkaVisualLogger create(ActorSystem system) {
 		if(instance ==null) {
-			instance = new AkkaVisualDebugger(system);
+			instance = new AkkaVisualLogger(system);
 		}
 		return instance;
 	}
 
 
-	private AkkaVisualDebugger(ActorSystem system) {
+	private AkkaVisualLogger(ActorSystem system) {
 		// set still starting
 		start = false;
 
@@ -56,7 +57,7 @@ public class AkkaVisualDebugger {
 
 		// load javaFX
 
-		new Thread(() -> App.launch(AkkaVisualDebugger.this, context)).start(); // launch asynchronously
+		new Thread(() -> App.launch(AkkaVisualLogger.this, context)).start(); // launch asynchronously
 		waitStart(); // give time to App to properly launch
 	}
 
@@ -65,7 +66,7 @@ public class AkkaVisualDebugger {
 		Configuration conf = Configuration.load();
 
 		// load mouse controller
-		GlobalMouseController mouseController = new GlobalMouseController(context);
+		GlobalController mouseController = new GlobalController(context);
 
 		// load global model
 		GlobalModel globalModel = new GlobalModel(context);
@@ -77,7 +78,7 @@ public class AkkaVisualDebugger {
 		start = true;
 	}
 
-	public void logActorCreated(ActorRef actor, String name) {
+	public void logActorCreated(akka.actor.Actor actor, String name) {
 		akkaModel.logActorCreated(actor, name);
 	}	
 

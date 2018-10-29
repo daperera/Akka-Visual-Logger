@@ -28,7 +28,7 @@ public class Message {
 		return delivered;
 	}
 
-	public Object getSource() {
+	public Actor getSource() {
 		return source;
 	}
 

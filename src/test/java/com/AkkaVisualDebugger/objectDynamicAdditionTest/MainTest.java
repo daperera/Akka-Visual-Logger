@@ -1,6 +1,6 @@
 package com.AkkaVisualDebugger.objectDynamicAdditionTest;
 
-import com.akkaVisualizor.AkkaVisualDebugger;
+import com.akkaVisualizor.AkkaVisualLogger;
 
 import akka.actor.ActorSystem;
 
@@ -8,7 +8,7 @@ public class MainTest {
 	public static void main(String[] args) {
 		ActorSystem system = ActorSystem.create();
 		
-		AkkaVisualDebugger log = AkkaVisualDebugger.create(system);
+		AkkaVisualLogger log = AkkaVisualLogger.create(system);
 		
 		System.out.println("loging actor type");
 		log.logActorType("default1", DefaultActor::props);

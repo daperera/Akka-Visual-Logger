@@ -1,40 +1,44 @@
 package com.akkaVisualizor.visualModel.visual;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import com.akkaVisualizor.akkaModel.Actor;
 
-public class VisualActorList implements Iterable<VisualActor> {
-	private final List<VisualActor> list;
-	private final BooleanProperty changeProperty;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+public class VisualActorList {
+	private final ObservableList<VisualActor> list;
+	private final Map<Actor, VisualActor> actorToVisualActor;
 	
 	public VisualActorList() {
-		list = new ArrayList<>();
-		changeProperty = new SimpleBooleanProperty(false);
+		list = FXCollections.observableArrayList();
+		actorToVisualActor = new HashMap<>();
 	}
 	
 	public void add(VisualActor visualActor) {
-		list.add(visualActor);
-	}
-
-	public BooleanProperty getChangeProperty() {
-		return changeProperty;
+		Platform.runLater(() -> list.add(visualActor));
+		actorToVisualActor.put(visualActor.getActor(), visualActor);
 	}
 	
-	public void notifyChange() {
-		changeProperty.set(!changeProperty.get());
-	}
-
-	@Override
-	public Iterator<VisualActor> iterator() {
-		return list.iterator();
-	}
-
-	public boolean contains(VisualActor t) {
-		return list.contains(t);
+	public void delete(VisualActor visualActor) {
+		Platform.runLater(() -> list.remove(visualActor));
+		actorToVisualActor.remove(visualActor.getActor());
+		visualActor.delete();
 	}
 	
+	public void remove(Actor actor) {
+		delete(actorToVisualActor.get(actor));
+	}
+	
+	public ObservableList<VisualActor> get() {
+		return list;
+	}
+	
+	public VisualActor get(Actor actor) {
+		return actorToVisualActor.get(actor);
+	}
+
 }

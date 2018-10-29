@@ -1,12 +1,10 @@
 package com.akkaVisualizor.visualModel.visual;
 
-import java.util.Iterator;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class VisualMessageTypeList implements Iterable<VisualMessageType> {
+public class VisualMessageTypeList {
 	private final ObservableList<VisualMessageType> list;
 	
 	public VisualMessageTypeList() {
@@ -15,11 +13,6 @@ public class VisualMessageTypeList implements Iterable<VisualMessageType> {
 	
 	public void add(VisualMessageType visualMessageType) {
 		Platform.runLater(() -> list.add(visualMessageType));
-	}
-
-	@Override
-	public Iterator<VisualMessageType> iterator() {
-		return list.iterator();
 	}
 
 	public boolean contains(VisualMessageType t) {

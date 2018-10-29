@@ -24,11 +24,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 
-public class GlobalMouseController {
+public class GlobalController {
 	private final Context context;
 	private Map<String, Boolean> currentlyActiveKeys;
 
-	public GlobalMouseController(Context context) {
+	public GlobalController(Context context) {
 		this.context = context;
 		currentlyActiveKeys = new HashMap<>();
 	}
@@ -78,7 +78,7 @@ public class GlobalMouseController {
 		if(e.isShiftDown()) {
 			context.getModel().addToSelectedActorList(actor);
 		} else if(e.isControlDown()) {
-			context.getModel().createBidirectionalChannelTo(actor);
+			context.getModel().createChannelTo(actor);
 		} else if(e.isAltDown()) {
 			context.getModel().createMessageTo(actor);;
 		} else {

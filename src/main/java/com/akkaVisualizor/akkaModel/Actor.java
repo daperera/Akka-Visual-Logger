@@ -3,41 +3,49 @@ package com.akkaVisualizor.akkaModel;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 
 import akka.actor.ActorRef;
 
-public class Actor {
+public class Actor extends Observable {
 
-	private final ActorRef actorRef;
+	private final akka.actor.Actor akkaActor;
 	private final String name; 
 	private ActorState currentState;
 
-	public Actor(ActorRef actorRef, String name, ActorType actorType) {
-		this.actorRef = actorRef;
+	public Actor(akka.actor.Actor akkaActor, String name, ActorType actorType) {
+		this.akkaActor = akkaActor;
 		this.name = name;
-		currentState = null;
+		actualizeState();
 	}
 
 	public ActorRef getActorRef() {
-		return actorRef;
+		return akkaActor.self();
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public ActorState actualizeState() {
-		Class<? extends ActorRef> actorClass = actorRef.getClass();
+	public void actualizeState() {
+		Class<? extends akka.actor.Actor> actorClass = akkaActor.getClass();
 		Map<String, Object> fields = new HashMap<>();
 		// take a 'snapshot' of the fields of the actor, and of their values
+		System.out.println("detected class " + actorClass.getName()); 
 		for(Field f : actorClass.getDeclaredFields()) {
+			System.out.println("field read : " + f.getName());
 			try {
-				fields.put(f.getName(), f.get(actorRef));
+				fields.put(f.getName(), f.get(akkaActor));
+				System.out.println("field successfully extracted");
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}		
-		return new ActorState(fields, actorClass, actorRef);
+		currentState = new ActorState(fields, actorClass, akkaActor); 
+		
+		// notify observers
+		setChanged();
+		notifyObservers(currentState);
 	}
 	
 	public ActorState getCurrentState() {
@@ -46,7 +54,7 @@ public class Actor {
 
 	public void loadState(ActorState state) {
 		Map<String, Object> fields = state.getFields();
-		Class<? extends ActorRef> actorClass = state.getActorClass();
+		Class<? extends akka.actor.Actor> actorClass = state.getActorClass();
 		// set actor fields to the stored value
 		for(String fieldName : fields.keySet()) {
 			try {
@@ -54,7 +62,7 @@ public class Actor {
 				Object storedValue = fields.get(fieldName); 
 				f.set(this, storedValue);
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		currentState = state;

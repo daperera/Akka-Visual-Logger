@@ -6,8 +6,8 @@ import com.akkaVisualizor.visualModel.visual.VisualActorType;
 
 import javafx.scene.control.ListView;
 
+@SuppressWarnings("restriction")
 public class ActorTypePane extends ListView<VisualActorType> {
-
 
 	public ActorTypePane(Context context) {
 		setCellFactory(param -> new ActorTypeListView(context));

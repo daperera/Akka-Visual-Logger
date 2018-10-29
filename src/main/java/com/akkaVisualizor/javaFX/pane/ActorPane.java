@@ -1,45 +1,76 @@
 package com.akkaVisualizor.javaFX.pane;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import com.akkaVisualizor.Context;
-import com.akkaVisualizor.javaFX.view.ActorView;
+import com.akkaVisualizor.akkaModel.ActorState;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
-import com.akkaVisualizor.visualModel.visual.VisualActorList;
 
-import javafx.beans.value.ChangeListener;
-import javafx.scene.layout.AnchorPane;
+import javafx.collections.ListChangeListener;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 
-public class ActorPane extends AnchorPane{
-	private List<ActorView> actorViewList;
-	private Context context;
+@SuppressWarnings("restriction")
+public class ActorPane extends TreeView<String> {
 
+	private final Map<VisualActor, TreeItem<String>> visualActorToTreeItem; 
+	
 	public ActorPane(Context context) {
-		this.context = context;
-		actorViewList = new ArrayList<>();
-		update();
-		
-		// update when the visualActorTypeList change
-		context.getModel().getVisualActorList().getChangeProperty().addListener((ChangeListener<Boolean>) (o, oldVal,  newVal) -> { 
-			update();
-		});
-	}
+		visualActorToTreeItem = new HashMap<>();
 
-	public void update() {
-		VisualActorList ActorTypeList = context.getModel().getVisualActorList();
-		for(VisualActor type : ActorTypeList) {
-			// detect if type was added to ActorTypeList since last update
-			boolean contains = false;
-			for(ActorView view : actorViewList) {
-				if(view.getModel().equals(type)) {
-					contains = true;
-					break;
+		TreeItem<String> root = new TreeItem<>();
+		setRoot(root);
+		setShowRoot(false);
+		
+		context.getModel().getVisualActorList().get().addListener((ListChangeListener.Change<? extends VisualActor> change)  -> {
+			while (change.next()) {
+				if(change.wasAdded()) {
+					
+				}
+				if (change.wasPermutated()) {
+					for (int i = change.getFrom(); i < change.getTo(); ++i) {
+						//permutate
+					}
+				} else if (change.wasUpdated()) {
+					//update item
+				} else {
+					for (VisualActor visualActor : change.getRemoved()) {
+						System.out.println("element deleted");
+						root.getChildren().remove(visualActorToTreeItem.get(visualActor));
+					}
+					for (VisualActor visualActor : change.getAddedSubList()) {
+						System.out.println("element added");
+						root.getChildren().add(createTreeItem(visualActor));
+					}
 				}
 			}
-			if(!contains) {
-				//actorViewList.add(new ActorView(type));
-			}
+		}); 
+	}
+
+	private TreeItem<String> createTreeItem(VisualActor visualActor) {
+		TreeItem<String> t = new TreeItem<>(visualActor.getActor().getName());
+		
+		visualActor.getActor().getCurrentState();
+		
+		// set listener to actor state changes
+		visualActor.getActor().addObserver( (obs, arg) -> {
+			actualizeTreeItem(t, ((ActorState) arg).getFields());
+		});
+		
+		visualActorToTreeItem.put(visualActor, t); // store it for future retrieval
+		return t;
+	}
+	
+	private void actualizeTreeItem(TreeItem<String> t, Map<String, Object> fields) {
+		System.out.println("actualizing actor state");
+		t.getChildren().clear();
+		for(Map.Entry<String, Object> e : fields.entrySet()) {
+			System.out.println("there is a field to this object");
+			t.getChildren().add(new TreeItem<>(e.getKey() + " : " + e.getValue().toString()));
 		}
 	}
+	
 }

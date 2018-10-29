@@ -1,6 +1,6 @@
 package com.AkkaVisualDebugger.messageTest;
 
-import com.akkaVisualizor.AkkaVisualDebugger;
+import com.akkaVisualizor.AkkaVisualLogger;
 
 import akka.actor.AbstractActor;
 import akka.actor.Props;
@@ -8,7 +8,7 @@ import akka.japi.pf.ReceiveBuilder;
 
 public class Receiver extends AbstractActor {
 
-	private AkkaVisualDebugger log = AkkaVisualDebugger.getInstance();
+	private final AkkaVisualLogger log = AkkaVisualLogger.getInstance();
 	
 	public static Props props() {
 		return Props.create(Receiver.class, () -> new Receiver());

@@ -17,6 +17,10 @@ public class Sender extends AbstractActor {
 		return Props.create(Sender.class, () -> new Sender());
 	}
 	
+	public Sender() {
+		log.logActorCreated(this);
+	}
+	
 	@Override
 	public Receive createReceive() {
 		return ReceiveBuilder.create()
@@ -28,11 +32,21 @@ public class Sender extends AbstractActor {
 	private void reply(Reply m) {
 		log.logMessageReceived(m, getSender(), getSelf());
 		System.out.println("reply received");
+		
+		privateField++;
+		protectedField++;
+		publicField++;
+		
+		log.logInternalEvent(getSelf());
 	}
 	
 	private void matchAny(Object m) {
 		log.logMessageReceived(m, getSender(), getSelf());
 		System.out.println("unknown message received : " + m);
+	}
+	
+	public int getPrivateField() {
+		return privateField;
 	}
 	
 }

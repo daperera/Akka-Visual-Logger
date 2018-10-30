@@ -40,7 +40,7 @@ public class EventLogger {
 	
 	public void forward() {
 		if(currentIndex<historyIndex) {
-			Event e = history.get(historyIndex);
+			Event e = history.get(currentIndex);
 			e.redo(context);
 			currentIndex++;
 		}
@@ -48,9 +48,9 @@ public class EventLogger {
 
 	public void rewind() {
 		if(currentIndex>0) {
-			Event e = history.get(historyIndex);
-			e.undo(context);
 			currentIndex--;
+			Event e = history.get(currentIndex);
+			e.undo(context);
 		}
 	}
 	
@@ -79,6 +79,13 @@ public class EventLogger {
 		ActorState prevState = getPrevState(a);
 		ActorState currState = getCurrState(a);
 		Event e = new ReceiveEvent(a, m, prevState, currState);
+		logEvent(e, a, currState);
+	}
+	
+	public void logInternalEvent(Actor a) {
+		ActorState prevState = getPrevState(a);
+		ActorState currState = getCurrState(a);
+		Event e = new InternalEvent(a, prevState, currState);
 		logEvent(e, a, currState);
 	}
 	
@@ -138,5 +145,4 @@ public class EventLogger {
 		}
 	}
 
-	
 }

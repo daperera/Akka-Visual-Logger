@@ -3,10 +3,8 @@ package com.akkaVisualizor.javaFX.view;
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.visualModel.visual.VisualChannel;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
@@ -44,15 +42,6 @@ public class ChannelView extends Line {
 				setEffect(borderGlow); 
 			else
 				setEffect(null);
-		});
-
-
-		// delete itself when the actor is set deleted
-		visualChannel.getDeletedProperty().addListener((ChangeListener<Boolean>) (o, oldVal,  newVal) -> { 
-			if(newVal) {
-				// use Platform  in order to avoid throwing IllegalStateException by running from a non-JavaFX thread
-				Platform.runLater(() -> ((Pane) ChannelView.this.getParent()).getChildren().remove(ChannelView.this));
-			}
 		});
 	}
 

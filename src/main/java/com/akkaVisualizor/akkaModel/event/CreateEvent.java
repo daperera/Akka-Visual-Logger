@@ -12,7 +12,7 @@ public class CreateEvent extends Event{
 
 	@Override
 	public void redo(Context context) {
-		context.getAkkaModel().createActor(actor, actor.getName());
+		context.getAkkaModel().createActor(actor);
 		actor.loadState(currentState);
 	}
 

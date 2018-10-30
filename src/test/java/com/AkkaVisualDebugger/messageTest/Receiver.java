@@ -14,6 +14,10 @@ public class Receiver extends AbstractActor {
 		return Props.create(Receiver.class, () -> new Receiver());
 	}
 	
+	public Receiver() {
+		log.logActorCreated(this);
+	}
+	
 	@Override
 	public Receive createReceive() {
 		return ReceiveBuilder.create()

@@ -14,7 +14,6 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
-@SuppressWarnings("restriction")
 public class ActorListView extends ListCell<VisualActor> {
 
 	private static final int size = 60;

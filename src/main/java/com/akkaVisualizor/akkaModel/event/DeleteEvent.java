@@ -17,7 +17,7 @@ public class DeleteEvent extends Event {
 
 	@Override
 	public void undo(Context context) {
-		context.getAkkaModel().createActor(actor, actor.getName());
+		context.getAkkaModel().createActor(actor);
 		actor.loadState(previousState);
 	}
 

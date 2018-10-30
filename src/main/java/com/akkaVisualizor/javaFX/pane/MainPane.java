@@ -32,5 +32,5 @@ public class MainPane extends SplitPane {
 	public SimulatorPane getSimulationPane() {
 		return simulationPane;
 	}
-	
+
 }

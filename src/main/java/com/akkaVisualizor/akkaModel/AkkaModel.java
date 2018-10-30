@@ -20,19 +20,23 @@ public class AkkaModel {
 	private Context context;
 	private ActorSystem system;
 
-	private Map<ActorRef, Actor> actorRefToActor;
-	private Map<Object, Message> messageToMessage;
-	private List<ActorType> actorTypeList;
-	private List<MessageType> messageTypeList;
-	private EventLogger eventLogger;
+	//private Map<ActorRef, Actor> actorRefToActor;
+	private final Map<Object, Message> messageToMessage;
+	private final List<ActorType> actorTypeList;
+	private final List<MessageType> messageTypeList;
+	private final ActorList actorList;
+	private final ChannelList channelList;
+	private final EventLogger eventLogger;
 
 	public AkkaModel(Context context, ActorSystem system) {
 		this.context = context;
 		this.system = system;
-		actorRefToActor = new HashMap<ActorRef, Actor>();
+		//actorRefToActor = new HashMap<ActorRef, Actor>();
 		messageToMessage = new HashMap<Object, Message>();
 		actorTypeList = new ArrayList<ActorType>();
 		messageTypeList = new ArrayList<MessageType>();
+		actorList = new ActorList(context);
+		channelList = new ChannelList();
 		eventLogger = new EventLogger(context);
 	}
 
@@ -42,55 +46,36 @@ public class AkkaModel {
 	 */
 	public void createActor(ActorType actorType, String name) throws Exception {
 		// create actor in akka
-		ActorRef actorRef = getInstance(actorType, name);
-		
-		
-/*
-		// create actor internally
-		// remark : use akka decided name, and not name used when invoking this function (in case they are different)
-		Actor actor = new Actor(actorRef, getName(actorRef), actorType);
-		actorRefToActor.put(actorRef, actor);
-		eventLogger.logActorCreated(actor);
-		
-		// return to model
-		return actor;
-	*/
+		getInstance(actorType, name);
 	}
 
 	/**
 	 * Use this method to create an actor from akka system.
 	 * No modification is propagated to akka system.
 	 */
-	public void logActorCreated(akka.actor.Actor AkkaActor, String name) {
+	public void logActorCreated(akka.actor.Actor akkaActor) {
 		// unfold out actor type
 		ActorType actorType = null;
 		for(ActorType type : actorTypeList) {
-			if(AkkaActor.getClass().equals(type.getClass())) {
+			if(akkaActor.getClass().equals(type.getClass())) {
 				actorType = type;
 			}
 		}
 
 		// create actor internally
-		Actor actor = new Actor(AkkaActor, name, actorType);
-		actorRefToActor.put(AkkaActor.self(), actor);
+		Actor actor = new Actor(context, akkaActor, getName(akkaActor), actorType);
+		actorList.add(actor);
 		eventLogger.logActorCreated(actor);
-
-
-		// notify model
-		context.getModel().notifyActorCreated(actor);
 	}	
 
 	/**
 	 * Use this method to create an actor from the event logger.
 	 * This event is not logged and no modification is propagated to akka system.
 	 */
-	public void createActor(Actor actor, String name) {
+	public void createActor(Actor actor) {
 		// create actor internally
-		actorRefToActor.put(actor.getActorRef(), actor);
+		actorList.add(actor);
 
-		// notify model
-		context.getModel().notifyActorCreated(actor);
-		
 		// do not propagate modification to akka and do not log this event 
 	}
 
@@ -101,18 +86,19 @@ public class AkkaModel {
 	public Channel createChannel(Actor source, Actor target) {
 		// create channel internally
 		Channel channel = new Channel(source, target);
+		source.addChannel(channel); // automatically update channelList
 		eventLogger.logChannelCreated(channel);
 
 		return channel;
 	}
-	
+
 	/**
 	 * Use this method to create channel from event logger.
 	 * Event is not logged, and there is propagation to model
 	 */
 	public void createChannel(Channel channel) {
 		// notify model
-		context.getModel().notifyChannelCreated(channel);
+		channel.getSource().addChannel(channel);
 	}
 
 	/**
@@ -121,16 +107,17 @@ public class AkkaModel {
 	 */
 	public void deleteChannel(Channel channel) {
 		// register deletion internally
+		channel.getSource().removeChannel(channel);
 		eventLogger.logChannelDeleted(channel);
 	}
-	
+
 	/**
 	 * Use this method to delete channel from event logger.
 	 * Event is not logged, and there is propagation to model
 	 */
 	public void deleteChannelFromEventLogger(Channel channel) {
-		// notify model
-		context.getModel().notifyChannelDeleted(channel);
+		// delete channel internally
+		channel.getSource().removeChannel(channel);
 	}
 
 	/**
@@ -142,7 +129,7 @@ public class AkkaModel {
 		system.stop(actor.getActorRef());
 
 		// delete actor internally
-		actorRefToActor.remove(actor.getActorRef());
+		actorList.delete(actor);
 		eventLogger.logActorDeleted(actor);
 	}
 
@@ -152,13 +139,10 @@ public class AkkaModel {
 	 */
 	public void logActorDeleted(ActorRef actorRef) {
 		// get corresponding actor
-		Actor actor = actorRefToActor.get(actorRef);
-
-		// delete in model
-		context.getModel().notifyActorDeleted(actor);
-
+		Actor actor = actorList.get(actorRef);
+		
 		// delete actor internally
-		actorRefToActor.remove(actorRef);
+		actorList.delete(actor);
 		eventLogger.logActorDeleted(actor);
 	}
 
@@ -172,24 +156,25 @@ public class AkkaModel {
 
 		// send message in akka
 		target.getActorRef().tell(message.getMessage(), source.getActorRef());
-		
+
 		// notify model
 		return message;
 	}
-	
+
 	/**
 	 * Use this method to send message from akka system.
 	 * No modification in akka system.
 	 */
 	public void logMessageSent(Object m, ActorRef source, ActorRef target) {
 		// construct message internally
-		Message message = internalMessageCreation(m, actorRefToActor.get(source), actorRefToActor.get(target));
+		//		Message message = internalMessageCreation(m, actorRefToActor.get(source), actorRefToActor.get(target));
+		Message message = internalMessageCreation(m, actorList.get(source), actorList.get(target));
 		eventLogger.logMessageSent(message);
 
 		// notify model
-		context.getModel().notifyMessageCreated(message);
+		context.getGlobalModel().notifyMessageCreated(message);
 	}
-	
+
 	/**
 	 * Use this method to send message from event logger.
 	 * This event is not logged and no modification is propagated to akka system.
@@ -197,10 +182,10 @@ public class AkkaModel {
 	public void sendMessage(Message message, Actor source, Actor target) {
 		// construct message internally
 		internalMessageCreation(message, source, target);
-		
+
 		// notify model
-		context.getModel().notifyMessageCreated(message);
-		
+		context.getGlobalModel().notifyMessageCreated(message);
+
 		// do not propagate modification to akka and do not log this event
 	}
 
@@ -218,7 +203,28 @@ public class AkkaModel {
 			message.setDelivered();
 			eventLogger.logMessageReceived(message);
 		}
+	}
 
+	/**
+	 * Use this method to send message from event logger.
+	 * This event is not logged and no modification is propagated to akka system.
+	 */
+	public void receiveMessage(Message message) {
+		if(message==null) {
+			new Exception("Error : an orphan message has been received").printStackTrace();;
+		} else {
+			message.setDelivered();
+		}
+
+		// do not propagate modification to akka and do not log this event
+	}
+
+	/**
+	 * Use this method to send message from akka system.
+	 * No modification in akka system.
+	 */
+	public void logInternalEvent(ActorRef actorRef) {
+		eventLogger.logInternalEvent(actorList.get(actorRef));
 	}
 
 	/**
@@ -231,7 +237,7 @@ public class AkkaModel {
 		actorTypeList.add(type);
 
 		// notify model ?
-		context.getModel().notifyActorTypeCreated(type);		
+		context.getGlobalModel().notifyActorTypeCreated(type);		
 	}
 
 	/**
@@ -244,7 +250,15 @@ public class AkkaModel {
 		messageTypeList.add(type);
 
 		// notify model ?
-		context.getModel().notifyMessageTypeCreated(type);
+		context.getGlobalModel().notifyMessageTypeCreated(type);
+	}
+
+	public ActorList getActorList() {
+		return actorList;
+	}
+
+	public ChannelList getChannelList() {
+		return channelList;
 	}
 
 	private Message internalMessageCreation(Object m, Actor source, Actor target) {
@@ -252,6 +266,26 @@ public class AkkaModel {
 		messageToMessage.put(m, message);
 		return message;
 	}
+	
+	public void resetHistory() {
+		// reset history cursor in the event logger
+		eventLogger.reset();
+		
+		// delete everything
+		actorList.clear(); // impacts channel list
+	}
+
+	public void redoHistory() {
+		System.out.println("replaying step");
+		eventLogger.forward();
+	}
+
+	public void undoHistory() {
+		System.out.println("undoing step");
+		eventLogger.rewind();
+	}
+	
+	
 
 	private ActorRef getInstance(ActorType type, String name) throws Exception {
 		if(name == null) { // if name is null use default akka name
@@ -266,10 +300,15 @@ public class AkkaModel {
 		}
 	}
 
-	/*
+	private String getName(akka.actor.Actor a) {
+		return getName(a.self());
+	}
+
 	private String getName(ActorRef actor) {
 		return actor.path().name();
 	}
-	*/
 
+	public void terminateAkkaSystem() {
+		system.terminate();
+	}
 }

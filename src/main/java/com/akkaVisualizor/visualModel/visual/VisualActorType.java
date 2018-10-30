@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import com.akkaVisualizor.akkaModel.ActorType;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.input.DataFormat;
 
 public class VisualActorType implements Serializable {

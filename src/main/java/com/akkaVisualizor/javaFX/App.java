@@ -9,7 +9,6 @@ import com.akkaVisualizor.javaFX.pane.MainPane;
 import com.akkaVisualizor.javaFX.view.ActorView;
 import com.akkaVisualizor.javaFX.view.ChannelView;
 import com.akkaVisualizor.javaFX.view.MessageView;
-import com.akkaVisualizor.visualModel.visual.VisualActor;
 import com.akkaVisualizor.visualModel.visual.VisualChannel;
 import com.akkaVisualizor.visualModel.visual.VisualMessage;
 
@@ -32,6 +31,7 @@ public class App extends Application {
 		App.context = context;
 
 		Application.launch();
+		context.getAkkaModel().terminateAkkaSystem(); // terminate akka system as well when the main window is closed
 	}
 
 	@Override
@@ -53,11 +53,12 @@ public class App extends Application {
 
 	}
 
+	/*
 	public void createActor(VisualActor visualActor, String name, double x, double y) throws Exception {
 		ActorView actorView = new ActorView(context, visualActor, name, x, y);
 		root.getSimulationPane().getChildren().add(actorView);
 	}
-
+*/
 	public void createUnidirectionalChannel(ActorView source, ActorView target) {
 		System.out.println("NOT YET IMPLEMENTED");
 	}

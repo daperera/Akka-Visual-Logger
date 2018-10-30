@@ -4,10 +4,8 @@ import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Configuration;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -19,7 +17,7 @@ public class ActorView extends StackPane {
 	private final VisualActor actor;
 	private final Circle circle;
 
-	public ActorView(Context context, VisualActor actor, String name, double x, double y) {
+	public ActorView(Context context, VisualActor actor) {
 		// init variables
 		this.actor = actor;
 
@@ -31,7 +29,7 @@ public class ActorView extends StackPane {
 
 		// create javafxNode hierarchy
 		circle = new Circle();
-		Text text = new Text(name);
+		Text text = new Text(actor.getActor().getName());
 		text.setBoundsType(TextBoundsType.VISUAL); 
 		getChildren().addAll(circle, text);
 
@@ -60,13 +58,6 @@ public class ActorView extends StackPane {
 				circle.setEffect(null);
 		});
 
-		// delete itself when the actor is set deleted
-		actor.getDeletedProperty().addListener((ChangeListener<Boolean>) (o, oldVal,  newVal) -> { 
-			if(newVal) {
-				// use Platform  in order to avoid throwing IllegalStateException by running from a non-JavaFX thread
-				Platform.runLater(() -> ((Pane) ActorView.this.getParent()).getChildren().remove(ActorView.this));
-			}
-		});
 	}
 
 	public VisualActor getModel() {

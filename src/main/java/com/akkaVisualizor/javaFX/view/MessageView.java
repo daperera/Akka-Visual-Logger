@@ -27,9 +27,6 @@ public class MessageView extends StackPane {
 
 	public MessageView(Context context, VisualMessage message) {
 		// init variables
-//		Configuration conf = context.getConfiguration();
-
-		
 		
 		// bind coordinate to those of the visual message
 		setManaged(false);

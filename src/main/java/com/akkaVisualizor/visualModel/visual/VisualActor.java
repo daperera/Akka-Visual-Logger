@@ -14,7 +14,7 @@ public class VisualActor {
 	private double dragDeltaX, dragDeltaY;
 	private DoubleProperty x, y;
 	private Actor actor;
-	private BooleanProperty deletedProperty;
+//	private BooleanProperty deletedProperty;
 	
 	
 	public VisualActor(Context context, Actor actor, String name, double x, double y) {
@@ -23,7 +23,7 @@ public class VisualActor {
 		this.y = new SimpleDoubleProperty(y);
 		
 		selectedProperty = new SimpleBooleanProperty(false);
-		deletedProperty = new SimpleBooleanProperty(false);
+//		deletedProperty = new SimpleBooleanProperty(false);
 	}
 
 	public void select() {
@@ -67,7 +67,7 @@ public class VisualActor {
 	public double getDragDeltaY() {
 		return dragDeltaY;
 	}
-
+/*
 	public BooleanProperty getDeletedProperty() {
 		return deletedProperty;
 	}
@@ -75,6 +75,7 @@ public class VisualActor {
 	public void delete() {
 		deletedProperty.set(true);
 	}
-
+*/
+	
 //	private class Delta { double x, y; }
 }

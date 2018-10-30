@@ -16,7 +16,7 @@ public class ReceiveEvent extends Event {
 
 	@Override
 	public void redo(Context context) {
-		context.getAkkaModel().logMessageReceived(message.getMessage(), message.getSource().getActorRef(), message.getTarget().getActorRef());
+		context.getAkkaModel().receiveMessage(message);
 		actor.loadState(currentState);
 	}
 

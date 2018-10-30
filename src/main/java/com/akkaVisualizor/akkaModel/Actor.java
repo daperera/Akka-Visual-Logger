@@ -1,9 +1,13 @@
 package com.akkaVisualizor.akkaModel;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+
+import com.akkaVisualizor.Context;
 
 import akka.actor.ActorRef;
 
@@ -11,12 +15,16 @@ public class Actor extends Observable {
 
 	private final akka.actor.Actor akkaActor;
 	private final String name; 
+	private final List<Channel> channelList;
 	private ActorState currentState;
+	private final Context context;
 
-	public Actor(akka.actor.Actor akkaActor, String name, ActorType actorType) {
+	public Actor(Context context, akka.actor.Actor akkaActor, String name, ActorType actorType) {
+		this.context = context;
 		this.akkaActor = akkaActor;
 		this.name = name;
-		actualizeState();
+		this.channelList = new ArrayList<>();
+		//actualizeState();
 	}
 
 	public ActorRef getActorRef() {
@@ -26,19 +34,32 @@ public class Actor extends Observable {
 	public String getName() {
 		return name;
 	}
-
+	
+	public void addChannel(Channel channel) {
+		if(!channelList.contains(channel)) {
+			channelList.add(channel);
+		}
+		context.getAkkaModel().getChannelList().add(channel);
+	}
+	
+	public void removeChannel(Channel channel) {
+		channelList.remove(channel);
+		context.getAkkaModel().getChannelList().remove(channel);
+	}
+	
+	public List<Channel> getChannelList() {
+		return channelList;
+	}
+	
 	public void actualizeState() {
 		Class<? extends akka.actor.Actor> actorClass = akkaActor.getClass();
 		Map<String, Object> fields = new HashMap<>();
 		// take a 'snapshot' of the fields of the actor, and of their values
-		System.out.println("detected class " + actorClass.getName()); 
 		for(Field f : actorClass.getDeclaredFields()) {
-			System.out.println("field read : " + f.getName());
 			try {
 				fields.put(f.getName(), f.get(akkaActor));
-				System.out.println("field successfully extracted");
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				//e.printStackTrace();
+				// do nothing
 			}
 		}		
 		currentState = new ActorState(fields, actorClass, akkaActor); 
@@ -62,10 +83,10 @@ public class Actor extends Observable {
 				Object storedValue = fields.get(fieldName); 
 				f.set(this, storedValue);
 			} catch (Exception e) {
-				//e.printStackTrace();
+				// do nothing
 			}
 		}
 		currentState = state;
 	}
-
+	
 }

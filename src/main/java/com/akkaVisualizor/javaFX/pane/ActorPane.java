@@ -2,8 +2,6 @@ package com.akkaVisualizor.javaFX.pane;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.ActorState;
@@ -13,7 +11,6 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
-@SuppressWarnings("restriction")
 public class ActorPane extends TreeView<String> {
 
 	private final Map<VisualActor, TreeItem<String>> visualActorToTreeItem; 
@@ -25,7 +22,7 @@ public class ActorPane extends TreeView<String> {
 		setRoot(root);
 		setShowRoot(false);
 		
-		context.getModel().getVisualActorList().get().addListener((ListChangeListener.Change<? extends VisualActor> change)  -> {
+		context.getGlobalModel().getVisualActorList().get().addListener((ListChangeListener.Change<? extends VisualActor> change)  -> {
 			while (change.next()) {
 				if(change.wasAdded()) {
 					
@@ -38,11 +35,11 @@ public class ActorPane extends TreeView<String> {
 					//update item
 				} else {
 					for (VisualActor visualActor : change.getRemoved()) {
-						System.out.println("element deleted");
+//						System.out.println("element deleted");
 						root.getChildren().remove(visualActorToTreeItem.get(visualActor));
 					}
 					for (VisualActor visualActor : change.getAddedSubList()) {
-						System.out.println("element added");
+//						System.out.println("element added");
 						root.getChildren().add(createTreeItem(visualActor));
 					}
 				}
@@ -65,10 +62,8 @@ public class ActorPane extends TreeView<String> {
 	}
 	
 	private void actualizeTreeItem(TreeItem<String> t, Map<String, Object> fields) {
-		System.out.println("actualizing actor state");
 		t.getChildren().clear();
 		for(Map.Entry<String, Object> e : fields.entrySet()) {
-			System.out.println("there is a field to this object");
 			t.getChildren().add(new TreeItem<>(e.getKey() + " : " + e.getValue().toString()));
 		}
 	}

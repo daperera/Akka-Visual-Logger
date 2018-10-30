@@ -6,13 +6,12 @@ import com.akkaVisualizor.akkaModel.ActorType.SerializableSupplier;
 import com.akkaVisualizor.akkaModel.AkkaModel;
 import com.akkaVisualizor.akkaModel.Configuration;
 import com.akkaVisualizor.javaFX.App;
-import com.akkaVisualizor.visualModel.GlobalModel;
 import com.akkaVisualizor.visualModel.GlobalController;
+import com.akkaVisualizor.visualModel.GlobalModel;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actor.Actor;
 
 public class AkkaVisualLogger {
 
@@ -51,35 +50,39 @@ public class AkkaVisualLogger {
 
 		// load context
 		context = new Context();
-
+		
+		// load config
+		Configuration configuration = Configuration.load();
+		context.setConfiguration(configuration);
+		
 		// load Akka simulator
 		akkaModel = new AkkaModel(context, system);
-
+		context.setAkkaModel(akkaModel);
+		
+		// load global model
+		GlobalModel globalModel = new GlobalModel(context);
+		context.setGlobalModel(globalModel);
+		
+		// load mouse controller
+		GlobalController globalMouseController = new GlobalController(context);
+		context.setGlobalMouseController(globalMouseController);
+		
 		// load javaFX
-
 		new Thread(() -> App.launch(AkkaVisualLogger.this, context)).start(); // launch asynchronously
 		waitStart(); // give time to App to properly launch
 	}
 
 	public void registerJavaFXApplication(App app) {
-		// load config
-		Configuration conf = Configuration.load();
-
-		// load mouse controller
-		GlobalController mouseController = new GlobalController(context);
-
-		// load global model
-		GlobalModel globalModel = new GlobalModel(context);
-
+		
 		// actualize context
-		context.set(conf, akkaModel, mouseController, globalModel, app);
+		context.setApp(app);
 
 		// consider app done starting
 		start = true;
 	}
 
-	public void logActorCreated(akka.actor.Actor actor, String name) {
-		akkaModel.logActorCreated(actor, name);
+	public void logActorCreated(akka.actor.Actor actor) {
+		akkaModel.logActorCreated(actor);
 	}	
 
 	public void logActorDeleted(ActorRef actor) {
@@ -94,6 +97,10 @@ public class AkkaVisualLogger {
 		akkaModel.logMessageReceived(m, source, target);
 	}
 
+	public void logInternalEvent(ActorRef self) {
+		akkaModel.logInternalEvent(self);
+	}
+	
 	public void logActorType(String typeClass, SerializableSupplier<Props> typeConstructor) {
 		akkaModel.logActorType(typeClass, typeConstructor);
 	}
@@ -101,6 +108,7 @@ public class AkkaVisualLogger {
 	public void logMessageType(String name, Supplier<Object> messageConstructor) {
 		akkaModel.logMessageType(name, messageConstructor);
 	}
+
 
 	private void waitStart() {
 		while(!start) {
@@ -111,5 +119,6 @@ public class AkkaVisualLogger {
 			}
 		}
 	}
+
 
 }

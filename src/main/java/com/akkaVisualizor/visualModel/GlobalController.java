@@ -67,7 +67,7 @@ public class GlobalController {
 		VisualActorType t = (VisualActorType) e.getDragboard().getContent(VisualActorType.format);
 		double x = e.getX(), y = e.getY();
 		Platform.runLater(() -> {
-			context.getModel().requestCreateActorFromType(t, x, y);
+			context.getGlobalModel().requestCreateActorFromType(t, x, y);
 		});
 	}
 
@@ -76,13 +76,13 @@ public class GlobalController {
 
 		// handle selection
 		if(e.isShiftDown()) {
-			context.getModel().addToSelectedActorList(actor);
+			context.getGlobalModel().addToSelectedActorList(actor);
 		} else if(e.isControlDown()) {
-			context.getModel().createChannelTo(actor);
+			context.getGlobalModel().createChannelTo(actor);
 		} else if(e.isAltDown()) {
-			context.getModel().createMessageTo(actor);;
+			context.getGlobalModel().createMessageTo(actor);;
 		} else {
-			context.getModel().selectActor(actor);
+			context.getGlobalModel().selectActor(actor);
 		}
 
 		// handle drag and move
@@ -104,14 +104,7 @@ public class GlobalController {
 	}
 
 	public void onMousePressed(SimulatorPane simulatorPane, MouseEvent e) {
-		context.getModel().simulationPaneClicked();
-		e.consume();
-	}
-
-	public void onKeyPressed(SimulatorPane simulatorPane, KeyEvent e) {
-		if(e.getCode().equals(KeyCode.DELETE)) {
-			context.getModel().nodeDeletion();
-		}
+		context.getGlobalModel().simulationPaneClicked();
 		e.consume();
 	}
 
@@ -120,16 +113,16 @@ public class GlobalController {
 
 		// handle selection
 		if(e.isShiftDown()) {
-			context.getModel().addToSelectedChannelList(channel);
+			context.getGlobalModel().addToSelectedChannelList(channel);
 		} else {
-			context.getModel().selectChannelView(channel);
+			context.getGlobalModel().selectChannel(channel);
 		}
 		e.consume();
 	}
 	
 	public void onMousePressed(MessageTypeListView messageTypeListView, MouseEvent e) {
 		VisualMessageType messageType = messageTypeListView.getItem();
-		context.getModel().selectMessageType(messageType);
+		context.getGlobalModel().selectMessageType(messageType);
 	}
 
 	public void onKeyPressed(KeyEvent e) {
@@ -149,7 +142,13 @@ public class GlobalController {
 
 	private void keyPressed(KeyCode code) {
 		if(code.equals(KeyCode.DELETE)) {
-			context.getModel().nodeDeletion();
+			context.getGlobalModel().nodeDeletion();
+		} else if(code.equals(KeyCode.BACK_SPACE)) {
+			context.getGlobalModel().resetHistory();
+		} else if(code.equals(KeyCode.Q)) {
+			context.getGlobalModel().undoHistory();
+		} else if(code.equals(KeyCode.D)) {
+			context.getGlobalModel().redoHistory();
 		}
 	}
 

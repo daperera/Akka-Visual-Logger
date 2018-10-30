@@ -21,8 +21,23 @@ public class Context {
 		this.globalModel = model;
 		this.app = visualizor;
 	}
-	public GlobalModel getModel() {
+	public GlobalModel getGlobalModel() {
 		return globalModel;
+	}
+	public void setGlobalModel(GlobalModel globalModel) {
+		this.globalModel = globalModel;
+	}
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	public void setAkkaModel(AkkaModel akkaModel) {
+		this.akkaModel = akkaModel;
+	}
+	public void setGlobalMouseController(GlobalController globalMouseController) {
+		this.globalMouseController = globalMouseController;
+	}
+	public void setApp(App app) {
+		this.app = app;
 	}
 	public Configuration getConfiguration() {
 		return configuration;

@@ -16,4 +16,9 @@ public class MenuPane extends SplitPane {
 		
 		getItems().add(new DuplicablePane(context));
 	}
+
+	public void ready() {
+		// TODO Auto-generated method stub
+		
+	}
 }

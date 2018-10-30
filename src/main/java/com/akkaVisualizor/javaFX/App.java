@@ -31,7 +31,7 @@ public class App extends Application {
 	private static AkkaVisualLogger appEntryPoint;
 	private static Context context;
 
-	private static final String documentationUrl = "https://github.com/daperera/akkaVisualDebugger/blob/master/README.md"; 
+	private static final String documentationUrl = "https://github.com/daperera/Akka-Visual-Logger/blob/master/README.md"; 
 
 	public static void launch(AkkaVisualLogger appEntryPoint, Context context) {
 		App.appEntryPoint = appEntryPoint;

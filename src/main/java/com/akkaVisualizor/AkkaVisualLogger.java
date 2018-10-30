@@ -6,6 +6,7 @@ import com.akkaVisualizor.akkaModel.ActorType.SerializableSupplier;
 import com.akkaVisualizor.akkaModel.AkkaModel;
 import com.akkaVisualizor.akkaModel.Configuration;
 import com.akkaVisualizor.javaFX.App;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.GlobalController;
 import com.akkaVisualizor.visualModel.GlobalModel;
 
@@ -64,8 +65,8 @@ public class AkkaVisualLogger {
 		context.setGlobalModel(globalModel);
 		
 		// load mouse controller
-		GlobalController globalMouseController = new GlobalController(context);
-		context.setGlobalMouseController(globalMouseController);
+		GlobalController globalController = new GlobalController(context);
+		context.setGlobalController(globalController);
 		
 		// load javaFX
 		new Thread(() -> App.launch(AkkaVisualLogger.this, context)).start(); // launch asynchronously

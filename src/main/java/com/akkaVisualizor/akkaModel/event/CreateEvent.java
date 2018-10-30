@@ -1,8 +1,8 @@
 package com.akkaVisualizor.akkaModel.event;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Actor;
 import com.akkaVisualizor.akkaModel.ActorState;
+import com.akkaVisualizor.utils.Context;
 
 public class CreateEvent extends Event{
 

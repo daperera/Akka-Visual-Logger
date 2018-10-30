@@ -1,6 +1,6 @@
 package com.akkaVisualizor.javaFX.view;
 
-import com.akkaVisualizor.Context;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.visual.VisualMessageType;
 
 import javafx.scene.control.ListCell;

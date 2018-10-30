@@ -1,7 +1,7 @@
 package com.akkaVisualizor.javaFX.pane;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.javaFX.view.ActorTypeListView;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.visual.VisualActorType;
 
 import javafx.scene.control.ListView;

@@ -4,18 +4,19 @@ package com.akkaVisualizor.visualModel;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.javaFX.pane.SimulatorPane;
 import com.akkaVisualizor.javaFX.view.ActorTypeListView;
 import com.akkaVisualizor.javaFX.view.ActorView;
 import com.akkaVisualizor.javaFX.view.ChannelView;
 import com.akkaVisualizor.javaFX.view.MessageTypeListView;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
 import com.akkaVisualizor.visualModel.visual.VisualActorType;
 import com.akkaVisualizor.visualModel.visual.VisualChannel;
 import com.akkaVisualizor.visualModel.visual.VisualMessageType;
 
 import javafx.application.Platform;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -156,8 +157,8 @@ public class GlobalController {
 		// do something when key is released
 	}
 
-
-
-	
+	public void menuHelpClicked(MenuItem menuHelp) {
+		context.getApp().displayHelp();
+	}
 
 }

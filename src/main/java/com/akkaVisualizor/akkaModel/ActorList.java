@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.akkaVisualizor.Context;
+import com.akkaVisualizor.utils.Context;
 
 import akka.actor.ActorRef;
 import javafx.application.Platform;

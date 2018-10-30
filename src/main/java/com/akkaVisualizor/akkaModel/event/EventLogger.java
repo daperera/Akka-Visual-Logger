@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Actor;
 import com.akkaVisualizor.akkaModel.ActorState;
 import com.akkaVisualizor.akkaModel.Channel;
 import com.akkaVisualizor.akkaModel.Message;
+import com.akkaVisualizor.utils.Context;
 
 public class EventLogger {
 

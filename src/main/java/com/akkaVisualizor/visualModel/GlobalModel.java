@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.ActorType;
 import com.akkaVisualizor.akkaModel.Message;
 import com.akkaVisualizor.akkaModel.MessageType;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
 import com.akkaVisualizor.visualModel.visual.VisualActorList;
 import com.akkaVisualizor.visualModel.visual.VisualActorType;

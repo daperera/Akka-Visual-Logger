@@ -3,8 +3,8 @@ package com.akkaVisualizor.javaFX.pane;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.ActorState;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
 
 import javafx.collections.ListChangeListener;

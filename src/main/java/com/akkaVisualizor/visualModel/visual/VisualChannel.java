@@ -1,7 +1,7 @@
 package com.akkaVisualizor.visualModel.visual;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Channel;
+import com.akkaVisualizor.utils.Context;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

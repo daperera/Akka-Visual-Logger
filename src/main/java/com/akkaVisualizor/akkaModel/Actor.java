@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
-import com.akkaVisualizor.Context;
+import com.akkaVisualizor.utils.Context;
 
 import akka.actor.ActorRef;
 

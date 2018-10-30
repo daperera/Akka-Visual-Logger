@@ -3,8 +3,8 @@ package com.akkaVisualizor.visualModel.visual;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Actor;
+import com.akkaVisualizor.utils.Context;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

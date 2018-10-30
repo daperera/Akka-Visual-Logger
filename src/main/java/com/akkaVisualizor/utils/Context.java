@@ -1,4 +1,4 @@
-package com.akkaVisualizor;
+package com.akkaVisualizor.utils;
 
 import com.akkaVisualizor.akkaModel.AkkaModel;
 import com.akkaVisualizor.akkaModel.Configuration;
@@ -9,7 +9,7 @@ import com.akkaVisualizor.visualModel.GlobalController;
 public class Context {
 	private Configuration configuration;
 	private AkkaModel akkaModel;
-	private GlobalController globalMouseController; 
+	private GlobalController globalController; 
 	private GlobalModel globalModel;
 	private App app;
 	
@@ -17,7 +17,7 @@ public class Context {
 			GlobalModel model, App visualizor) {
 		this.configuration = configuration;
 		this.akkaModel = akkaModel;
-		this.globalMouseController = globalMouseController;
+		this.globalController = globalMouseController;
 		this.globalModel = model;
 		this.app = visualizor;
 	}
@@ -33,8 +33,8 @@ public class Context {
 	public void setAkkaModel(AkkaModel akkaModel) {
 		this.akkaModel = akkaModel;
 	}
-	public void setGlobalMouseController(GlobalController globalMouseController) {
-		this.globalMouseController = globalMouseController;
+	public void setGlobalController(GlobalController globalMouseController) {
+		this.globalController = globalMouseController;
 	}
 	public void setApp(App app) {
 		this.app = app;
@@ -49,6 +49,6 @@ public class Context {
 		return app;
 	}
 	public GlobalController getGlobalMouseController() {
-		return globalMouseController;
+		return globalController;
 	}
 }

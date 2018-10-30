@@ -1,6 +1,6 @@
 package com.akkaVisualizor.javaFX.pane;
 
-import com.akkaVisualizor.Context;
+import com.akkaVisualizor.utils.Context;
 
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;

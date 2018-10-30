@@ -3,9 +3,9 @@ package com.akkaVisualizor.javaFX.pane;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.javaFX.view.ActorView;
 import com.akkaVisualizor.javaFX.view.ChannelView;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
 import com.akkaVisualizor.visualModel.visual.VisualChannel;
 

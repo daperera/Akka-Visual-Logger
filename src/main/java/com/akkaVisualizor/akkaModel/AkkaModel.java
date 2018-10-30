@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.ActorType.SerializableSupplier;
 import com.akkaVisualizor.akkaModel.event.EventLogger;
+import com.akkaVisualizor.utils.Context;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;

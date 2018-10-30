@@ -1,6 +1,6 @@
 package com.akkaVisualizor.javaFX.pane;
 
-import com.akkaVisualizor.Context;
+import com.akkaVisualizor.utils.Context;
 
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;

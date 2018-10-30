@@ -1,7 +1,7 @@
 package com.akkaVisualizor.javaFX.view;
 
-import com.akkaVisualizor.Context;
 import com.akkaVisualizor.akkaModel.Configuration;
+import com.akkaVisualizor.utils.Context;
 import com.akkaVisualizor.visualModel.visual.VisualActor;
 
 import javafx.beans.value.ChangeListener;

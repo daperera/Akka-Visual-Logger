@@ -116,26 +116,25 @@ The method logMessageType(<type_name>, <constructo>) is used to register a messa
 
 # GUI-side walkthrough
 The graphical interface is composed of two panels. The left panel (menu pane) and the right panel (simulation pane - where the actors, channels and messages are displayed). <br/>
-The left panel is divided in three tabs :
-- Actors : the actors states are displayed here;
-- Actor Types : the registered actors class are displayed;
-- Messages : the registered messages class are displayed here.
-<br/> <br/>
-To create an actor, drag and drop an entry from the Actor Types tab to the simulation pane.
-<br/>
-To create a communication channel, select a source actor with <left_click> and select a target actor with <ctr+left_click>.
-<br/>
-To send a message, select a message type from the Messages pane, select a source actor with <left_click> and select a target actor with <alt+left_click>.
-<br/>
-To delete an item, select it with <left_click> and press <suppr>.
-<br/> <br/>
+The left panel is divided in three tabs:
+- Actors: the actors states are displayed here;
+- Actor Types: the registered actors class are displayed;
+- Messages: the registered messages class are displayed here.
+<br/> 
+The program has two modes: simulation mode and replay mode. The replay mode offer the possibility to navigate step by step through the registered events.
 
-There are two modes : simulation mode and replay mode. The replay mode offer the possibility to navigate step by step through the registered events.
-<br/> <br/>
-To go to the first event in the event history, press <back_space>.
+## Simulation mode shorcuts
+There are several shortcuts that are specific to simulation mode. They will not work once replay mode is entered.
+- To create an actor, drag and drop an entry from the Actor Types tab to the simulation pane.
+- To create a communication channel, select a source actor with <left_click> and select a target actor with <ctr+left_click>.
+- To send a message, select a message type from the Messages pane, select a source actor with <left_click> and select a target actor with <alt+left_click>.
+- To delete an item, select it with <left_click> and press <suppr>.
 <br/>
-To go to the previous event, press <q>.
-  <br/>
-To go to the previous event, press <d>.
-<br/> <br/>
-Warning : each of these keys make the program enter replay mode. Once in replay mode, there is no exiting it.
+
+## Replay mode shortcuts
+There are several shortcuts that are specific to replay mode. The use of any one of them these will make the program enter replay mode.
+- To go to the first event in the event history, press <back_space>.
+- To go to the previous event, press <q>.
+- To go to the previous event, press <d>. 
+<br/>
+Warning : Once in replay mode, there is no exiting it.

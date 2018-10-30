@@ -120,7 +120,7 @@ The left panel is divided in three tabs :
 - Actors : the actors states are displayed here;
 - Actor Types : the registered actors class are displayed;
 - Messages : the registered messages class are displayed here.
-<br/>
+<br/> <br/>
 To create an actor, drag and drop an entry from the Actor Types tab to the simulation pane.
 <br/>
 To create a communication channel, select a source actor with <left_click> and select a target actor with <ctr+left_click>.
@@ -128,14 +128,14 @@ To create a communication channel, select a source actor with <left_click> and s
 To send a message, select a message type from the Messages pane, select a source actor with <left_click> and select a target actor with <alt+left_click>.
 <br/>
 To delete an item, select it with <left_click> and press <suppr>.
-<br/>
+<br/> <br/>
 
 There are two modes : simulation mode and replay mode. The replay mode offer the possibility to navigate step by step through the registered events.
-<br/>
+<br/> <br/>
 To go to the first event in the event history, press <back_space>.
 <br/>
 To go to the previous event, press <q>.
   <br/>
 To go to the previous event, press <d>.
-<br/>
+<br/> <br/>
 Warning : each of these keys make the program enter replay mode. Once in replay mode, there is no exiting it.

@@ -98,6 +98,14 @@ public class AkkaVisualLogger {
 		akkaModel.logMessageReceived(m, source, target);
 	}
 
+	public void logChannelCreated(ActorRef source, ActorRef target) {
+		akkaModel.logChannelCreated(source, target);
+	}
+	
+	public void logChannelDeleted(ActorRef source, ActorRef target) {
+		akkaModel.logChannelDeleted(source, target);
+	}
+	
 	public void logInternalEvent(ActorRef self) {
 		akkaModel.logInternalEvent(self);
 	}

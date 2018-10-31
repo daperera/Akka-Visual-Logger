@@ -91,6 +91,10 @@ public class AkkaModel {
 
 		return channel;
 	}
+	
+	public void logChannelCreated(ActorRef source, ActorRef target) {
+		createChannel(actorList.get(source), actorList.get(target));
+	}
 
 	/**
 	 * Use this method to create channel from event logger.
@@ -120,6 +124,10 @@ public class AkkaModel {
 		channel.getSource().removeChannel(channel);
 	}
 
+	public void logChannelDeleted(ActorRef source, ActorRef target) {
+		deleteChannel(channelList.get(source, target));
+	}
+	
 	/**
 	 * Use this method to delete actor from model.
 	 * no propagation back to model.
@@ -311,4 +319,5 @@ public class AkkaModel {
 	public void terminateAkkaSystem() {
 		system.terminate();
 	}
+
 }
